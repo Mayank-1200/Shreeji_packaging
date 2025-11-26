@@ -1,0 +1,253 @@
+i want to build a projecct based on .net framework and c#
+it also has parts for inventory management butt now rigght now needed
+
+here are the details for it
+this is the core logic for it 
+
+first of there are multiple customers so according to customer the data will be different, i should have an option to add even more customer
+for now put one customer named as "Prasang"
+
+now inside the customer i should be seeing a table, and a button to add records which then will be reflected in the table
+
+this part involves very deep maths logic
+
+in the input we will be asking this many fields
+
+1. Box name
+2. Box size
+3. Sheet size
+4. G.S.M
+5. Ply
+6. Paper
+7. Liner quantity
+8. Detail
+
+now what will we asking from user is Box name, Box size, G.S.M, Detail
+
+first of all user will give Box size we have to calculate sheet size based on that
+box size will be in length x breadth x height and then we need to calculate dimensions of the sheet size we need this instantly as soon as user enters dimensions we should be getting the sheet size now let me tell you the logic with example
+
+Box size - 16 x 12.25 x 7.75
+Sheet size we will be getting will be this - 21 x 29.75
+
+what we need to do is 16 + 12.25 + 1.5 = 29.75 (basically l+b+1.5) and 12.25 + 7.75 + 1 = 21 (basically b+h+1)
+another example is this 19.50 x 12.75 x 6.25 = 20 x 33.75
+
+we need to generate the Sheet size from coding side only
+
+now calculation comes of quantity and paper and liner
+now lets calculate it for this record 
+Box size - 16 x 12.25 x 7.75
+Sheet size will be - 21 x 29.75
+
+now what we gotta do is customer will provide us G.S.M numerical value only
+here it will be 120 
+
+now we gotta do 120+40% (40 will be always fixed) now doing that we will get (basically a + axb/100) 120 + 120*40/100 we will get 168 now add that with 120 again and we will get 288 now after this user would have already a number of a value which will be then added with 288. we need to put an input field of that too. lets say user gave 180. so at the end we only need to show the number 468. user would have entered 120 and 180 and we will do backend process and show 468 directly. (180 is basically last ply value)
+
+now thats gramage show that gramage in a field too
+
+now at the last we gotta calculate paper and liner usage now 2 ply makes one liner and basically 2 ply is 2 paper so we need to calulate that and show it in a field
+
+make me a software for this
+
+=================
+
+
+now for the ply there might be little bit more calculation to it
+for now we are giving 3 ply right we gotta make the count inccremental based on odd numbers 
+
+now we gotta do 120+40% (40 will be always fixed) now doing that we will get (basically a + axb/100) 120 + 120*40/100 we will get 168 now add that with 120 again and we will get 288 now after this user would have already a number of a value which will be then added with 288. we need to put an input field of that too. lets say user gave 180. so at the end we only need to show the number 468. user would have entered 120 and 180 and we will do backend process and show 468 directly. (180 is basically last ply value) 
+
+in this logic lets say i have put 5 ply so we need to calculate value like this 120 + 120*40/100 we will get 168 right. Now multiply this value by 2 and we will get 336 right now again add 120 in that we get 456 and then user will enter the last ply value himself
+
+NOTE THE PLY VALUE WILL BE ALWAYS ODD NUMBER SO PUT A VALIDATION LIKE THAT
+
+=======================
+we will go with this approach
+
+I WILL GIVE CODE ONE BY ONE AND YOU NEED TO GIVE ME THEIR MODIFIED CODE FILES ONE BY ONE MAKE SURE TO NOT MODIFY ANYTHING ELSE FROM THE CODE FILE OR KEEP IT MINIMAL SO OTHER LOGIC OF THE CODE STAYS INTACT
+
+======================
+
+now currently the logic is like this:
+paper and liner usage: 2 ply makes one liner and basically 2 ply is 2 paper
+
+instead what i want is this:
+3ply -> 1paper and 1 liner
+5ply -> 1 paper and 2 liner
+
+basically to make one box only requires one paper only the liner value changes
+another feature i wanna add is number of boxes currently the entire caluclation is based on 1 box only instead the calculation should go based on number of boxes i give
+
+currently Sheet size we are showing is only half so we need to rename the column to Sheet size(half) and sheet size full calculation goes like this:
+lets say this is the lxbxh - 16x12.25x7.75 and half sheet size (existing logic) givves us this - 21x29.75
+full sheet size - (16+12.25)x2+1.5 - 58 and (12.25+7.75)+1 -  i need a separate column for it
+
+now comes other calculating rate
+the sheet size we got 21x29.75 multiply it with gramage we got and then divide that value by 1550 = 188.63... now again user will give some value again (basically at what rate the box should sell) so lets say user gave number 50 so 188.63x50=9431.5/1000=9.4315 
+now this 9.4315 is our rate of 1 box now i also want an field where user will give number of boxes so the grand total we need to multiply it with number of boxes provided
+
+
+======================
+
+now currently the system is working properly what more i wanna do is:
+
+diffrent options which are some of the extra fields which will affect the grand total
+
+as the user who will use the software does some extra things on the boxes then that rate might differ lets say in making one box the user wants to add lamination so what user will do is enter the lamination rate of one box ex - 1 and then user entered No. of boxes 5 so basically the grand total we got in current existing process we need to add +5 that way if any other customisation user wants.
+
+we need to give 2 extra input fields for that: lamination, printing (this should not be mandatory field)
+
+and also currently there is no option to save the entry like when i click on the Add New Record button a dialog box appears right so after that i fill all the values but there is no option to save that entry i want to save that
+
+
+i also need a system or homepage kinda thing where i can select what customers as the user who will be using this software will have different records according to the customer so we need a homepage kind of thing where user can select or add new customers he want
+
+another thing is that this entire application should be made in a way that we store data offline lets say in json format i want to make a separate directory for that name it as storage inside that create another directory based on the name of customer and inside that customer folder there will be directories based on the name of customer and inside that there will be this data which we will enter all of the storage data should be in json files only and ensure some kind of encyption decryption algorithm to make sure the data stored can only be accessed by the our application that way security will be good too
+
+
+MY ENTIRE CODE LOGIC IS REALLY GOOD SO MAKE SURE TO NOT CHANGE ANYTHIG IN THAT, TELL ME WAHT YOU UNDERSTOOD FIRST AND UPON MY APPROVAL ONLY START DOING CODE CHANGES
+=============================
+
+
+First of all i want to change the name of project directory to "shreeji_packaging" and same thing with software. The software name should be "Shreeji Packaging" 
+
+
+now the changes i require are like this:
+
+first of all in the main table input we have a column named we have a column named "Last Ply Value" replace that name with the "Top Paper".
+
+
+Now another thing is the in the AddRecordForm.cs here we are showing two columns namely Sheet size (Half) and Sheet size (Full) now the current calculating logic for the paper and liner fields we are doing is the logic for Sheet size (full) so basically i want a checkbox where i can select to calculate the usage of paper and liner on the basis of Sheet size (Half) too if the checkbox is selected to the half then we need to double the usage of paper and liner
+
+for ex - if the ply value is 3 and for one box we are giving value as 1 paper and 1 liner right and if the ply vale is 5 then 1 paper and 2 liners right now this logic is correct for the Sheet size (full) but for Sheet size (half) it will be 2 paper and 2 liner for 3 ply and if ply value is 5 then 2 paper and 4 liners similarly if 7 ply then 2 paper and 6 liner.
+
+
+now i also want to calculate paper weight and liner weight too. below is the logic for it:
+paper - for ex - 
+my input is like this:
+lenght - 16
+breath - 12.25
+height - 7.75
+GSM - 120
+ply - 3
+top paper - 180
+then the sheet size (full) i will be getting is 21 * 58 and paper will be 1 and liner will be 1 for a single box (this much is already defined right) 
+
+now for the paper weight i will give example - (21 * 58 * 180(top paper)  * 1 (paper))/1550 * 1000 = 0.141 and the weight quantity will be in KGS so 0.141 kgs
+
+so if lets say i had 5000 boxes then it will be something like this:- (21*58*180*5000)/1550*1000 = 707kgs (if the value is greater then 0. something then only show round figure dont show anything after decimal if the value in 0. something then only show value in decimal)
+
+
+Now for the liner weight:
+120 (GSM) +40% (40 will be always fixed) now doing that we will get (basically a + axb/100) 120 + 120*40/100 we will get 168 now add that with 120 again and we will get 288 (i guess this much logic is already defined) now after this for the liner weight:- (21 * 58 * 288 * 1(liner)/1550*1000) = 0.226 kgs
+
+so if lets say i had 5000 boxes then it will be something like this:- (21*58*288*5000)/1550*1000 = 1169kgs (if the value is greater then 0. something then only show round figure dont show anything after decimal if the value in 0. something then only show value in decimal)
+
+
+Now for the last change in input form is this:
+we are aleady showing lamination/box and printing/box right, i need to add three more fields named punching/box, pasting/box, side-pasting/box
+
+now currently what we are doing is if any of this fields (lamination/box and printing/box right, punching/box, pasting/box, side-pasting/box) value are given we add that value in grand total right.
+
+that logic will be there for all the fields except the lamination/box
+
+lamination/box calculation logic is diffrent then others.
+formuala - 21 * 58/100 (this much is fixed) * {digit value might be in decimal or direct integer will be given by user} 
+ex- 21 * 58/100 = 12.18 * 0.36 = 4.38  now this 4.38 should be added in grand total also put a fields where it shows this 4.38 value
+
+
+
+FIRST ANALYSE THE CURRENT CODE FILES AND TELL ME WHAT YOU UNDERSTOOD BEFORE DOING ANY CODE CHANGES, UPON MY APPROVAL ONLY DO CODE CHANGES AND MAKE SURE TO NOT CHANGE EXISTING LOGIC AS IT IS VERY CRUCIAL LOGIC OKAY?
+
+======================
+
+ok now one last changes and this is apparently a big one
+
+currently when the app opens we are showing a small box to select customers right and according to that the customers table are shown right now what i want is that we show a homepage where customer can select whetther to select the inventory(new page) or to see the customers table alright
+
+
+now the new page logic goes like this:
+inventory (this is the new page we are gonna be showing)
+
+here we will be giving the feature where user will be able to manage the incoming stock and also if in customer tables where if user saves a particular record we will be cutting the stock usage from the inventopry page.
+
+
+basically in the new page there will be a table where there will be this many columns:
+rows where there will be digit value between 26-52 and a columns where there will be this values 100, 120, 150, 180, 250
+
+and a separete box showing genreal weight (two columns paper and liner) now what will happen is that each confguration will have certain weight in kgs 
+
+for ex - 26 value will have 1000kgs in 100th column name, for 26 value we will have 500kgs for 120th column name like that
+
+there will be a input form where user will be able to change that value according to the incoming stock right
+
+now how to subtract that kgs according to the order of customers we give in the customer table
+
+lets say for this values:
+lenght - 16
+breath - 12.25
+height - 7.75
+GSM - 120
+ply - 3
+top paper - 180
+No. of boxes  - 5000
+
+i get the paper weight as 707 kgs and liner weight as 1132 kgs right 
+
+now the substraction logic will be according to this we will get sheet size (full) as 21 * 58 right
+so take the 21 and search in the range from 26-52. Now in the range of 26-52 that number doesnt exist right so what we will do is multiply that 21 with 2 (21 * 2) = 42. now that number will be in the range now for 42 we will already having some stock in kgs for that right.
+
+Now for that 42 and the GSM applied is 120 that combination will be avaliable in the table so search that combination and minus the paper weight from that
+
+now lets say for 42, 120 GSM we are having 1000kgs in stock so once i hit the save from add record form subtract the 707 from 1000 in the stock table
+
+and again for liner weight similar logic 2 (21 * 2) = 42 so search that 42 and the top paper value given by user lets say user gave 180 so our combination will be 42 * 180 for that combination lets say we have 2000 kgs avalable so substract 1132 from there.
+
+
+now the above was case when we get sheet size less then the minimum range of 26-52 right. now lets say our sheet size was 32 * 50 so that number is already available in range from 26-52 so no need to do 32 * 2 in that case you can directly substract from that number
+
+Now the above case i told will only work for minimum number of 13 as that is the last digit we can multiply by 2 to get 26 right, so in that case what we neeed to do is substract the stock from general stock of paper and liner 
+
+ex - if the number is less then 13 and we get the 500kgs of weight and 500kgs of liner then directly substract that many from the general column of paper and liner.
+
+and if the muber is greater then 52 then again do the same thing of subtracting from genral stock
+
+AND ALSO if the gsm value and top paper value given by user in add record form is not from this number "100, 120, 150, 180, 250" then directly throw an message saying the gsm and top liner shoulld be betwen this "100, 120, 150, 180, 250"
+
+
+NOW TELL ME IF YOU GOT ANY QUESTIONS OR ANYTHING AND TELL ME WHAT YOU UNDERSTOOD FIRST AND ONLY UPON MY APPROVAL START DOING CODE CHANGES
+
+======================
+
+what i want is that:
+currently in inventory we are only table with values 100, 120, 150, 180, 250 now i want to add few more to it which are 80, 90, 200, 230, 300.
+
+and another thing i want is whenever we are adding a record during that time  we are giving length, bradth, height as input based on which we are caluclating sheet size and based on sheet size all of our other caluculations are possible right, now what i need is sometime i dont have length, breath, height and stuff but i do have sheet size so cant we just directly make use of it yk, like keep a checkbox where it says USE SHEET SiZE, if it is checked then we wont allow input for length, breath and height and if unchecked then our current flow (the logic which is alreay there) will be executed
+
+
+FIRST tell me what you understood before doing any code changes
+
+======================
+
+Now what i want is that the data inside the table should be given to be in a pdf format.
+
+where i dont want all the fields but certain fields should be exported to pdf:
+Box size
+Sheet size (half or full based on the checkbox which is selected)
+GSM
+Liner
+Ply
+top paper
+paper usage
+liner usage
+box quantity
+paper weight
+liner weight
+
+
+now the complex part is i want the pdf to not only have the option to select that lets say inside a customer table there might be 100s of records so i will select the ones i want to export and also i want to select from other customer table too and then all combined should come out in single pdf in a atble format.
+
+
+DO you understand what i need, so first tell me what can we do here and then upon my approval do code changes
