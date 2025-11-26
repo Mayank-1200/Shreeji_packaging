@@ -255,3 +255,4 @@ FodyWeavers.xsd
 
 # Custom: Ignore storage directory if desired
 storage/
+prompt.txt
