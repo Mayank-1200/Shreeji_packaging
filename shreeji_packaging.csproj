@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>ShreejiPackaging</AssemblyName>
+    <ApplicationTitle>Shreeji Packaging</ApplicationTitle>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PdfSharpCore" Version="1.3.65" />
+  </ItemGroup>
+
+</Project>
+
