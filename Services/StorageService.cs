@@ -10,7 +10,11 @@ namespace shreeji_packaging.Services
 {
     public static class StorageService
     {
-        public static readonly string StorageRoot = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "storage");
+        public static readonly string StorageRoot = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "ShreejiPackaging",
+            "storage"
+        );
 
         public static void EnsureCustomerDirectories(string customerName)
         {
