@@ -276,11 +276,11 @@ namespace shreeji_packaging.Forms
             {
                 var currentRecords = StorageService.LoadRecords(_customer.Name) ?? _customer.Records;
                 var exportDialog = new ExportDialog(_customer.Name, currentRecords);
-                
+
                 if (exportDialog.ShowDialog() == DialogResult.OK)
                 {
                     statusLabel.Text = "PDF export completed successfully";
-                    
+
                     Timer timer = new Timer() { Interval = 3000 };
                     timer.Tick += (s, args) =>
                     {
@@ -293,7 +293,7 @@ namespace shreeji_packaging.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error opening export dialog:\n{ex.Message}", "Error", 
+                MessageBox.Show($"Error opening export dialog:\n{ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -378,7 +378,7 @@ namespace shreeji_packaging.Forms
             {
                 RefreshGrid();
                 statusLabel.Text = "Record updated successfully";
-                
+
                 Timer timer = new Timer() { Interval = 3000 };
                 timer.Tick += (s, args) =>
                 {
@@ -403,7 +403,7 @@ namespace shreeji_packaging.Forms
                 else
                 {
                     // Scroll right
-                    dataGridView1.HorizontalScrollingOffset = Math.Min(dataGridView1.HorizontalScrollingOffset + 20, 
+                    dataGridView1.HorizontalScrollingOffset = Math.Min(dataGridView1.HorizontalScrollingOffset + 20,
                         dataGridView1.Columns.GetColumnsWidth(DataGridViewElementStates.Visible) - dataGridView1.ClientSize.Width);
                 }
             }
@@ -414,30 +414,59 @@ namespace shreeji_packaging.Forms
             try
             {
                 var inventory = StorageService.LoadInventory();
-                
+
                 // Parse sheet size full to get dimensions
                 if (string.IsNullOrEmpty(record.SheetSizeFull))
                     return;
-                
+
                 var parts = record.SheetSizeFull.Split('x');
                 if (parts.Length != 2)
                     return;
-                
-                if (!double.TryParse(parts[0].Trim(), out double fullLength))
+
+                if (!double.TryParse(parts[0].Trim(), out double fullLength) ||
+                    !double.TryParse(parts[1].Trim(), out double fullBreadth))
                     return;
-                
+
                 int row = (int)fullLength;
-                int gsm = (int)record.GSM;
+                int gsm1 = (int)record.GSM;
+                int gsm2 = (int)record.GSM2;
                 int topPaper = (int)record.LastPlyValue;
                 double paperWeight = record.PaperWeightTotal;
-                double linerWeight = record.LinerWeightTotal;
+
+                // Recalculate liner weights for each GSM separately using same logic as deduction
+                // Weight should remain the same regardless of half sheet usage
+                int numBoxes = record.NumberOfBoxes;
+                double baseLinerCountPerBox = (record.Ply - 1) / 2.0; // Base liner count without multiplier
+                
+                // Liner weight calculation: different logic for single GSM vs 2 GSMs
+                double linerWeightPerBox1;
+                double linerWeightPerBox2 = 0;
+                
+                if (gsm2 > 0)
+                {
+                    // When 2 GSMs are entered:
+                    // Liner 1: Sheet size × (GSM1 + 40) / 1550 / 1000 (40 is fixed value)
+                    linerWeightPerBox1 = (fullLength * fullBreadth * (gsm1 + 40)) / 1550.0 / 1000.0;
+                    // Liner 2: Sheet size × GSM2 / 1550 / 1000
+                    linerWeightPerBox2 = (fullLength * fullBreadth * gsm2) / 1550.0 / 1000.0;
+                }
+                else
+                {
+                    // Single GSM: calculate GSM + GSM*40/100, then add GSM again
+                    // Example: 120 + 120*40/100 = 168, then 168 + 120 = 288
+                    double linerGsmValue = gsm1 + gsm1 * 0.4 + gsm1; // GSM*2.4
+                    linerWeightPerBox1 = (fullLength * fullBreadth * linerGsmValue) / 1550.0 / 1000.0;
+                }
+                // Total weight = weight per liner * base liner count per box * number of boxes
+                double linerWeight1 = linerWeightPerBox1 * baseLinerCountPerBox * numBoxes;
+                double linerWeight2 = linerWeightPerBox2 * baseLinerCountPerBox * numBoxes;
 
                 // Calculate row number based on range (same logic as deduction)
                 if (row < 13)
                 {
                     // Restore to general stock
                     inventory.GeneralPaperStock += paperWeight;
-                    inventory.GeneralLinerStock += linerWeight;
+                    inventory.GeneralLinerStock += (linerWeight1 + linerWeight2);
                 }
                 else if (row < 26)
                 {
@@ -446,27 +475,35 @@ namespace shreeji_packaging.Forms
                     if (row >= 26 && row <= 52)
                     {
                         // Restore to table
-                        inventory.SetStock(row, gsm, inventory.GetStock(row, gsm) + paperWeight);
-                        inventory.SetStock(row, topPaper, inventory.GetStock(row, topPaper) + linerWeight);
+                        inventory.SetStock(row, gsm1, inventory.GetStock(row, gsm1) + paperWeight);
+                        inventory.SetStock(row, gsm1, inventory.GetStock(row, gsm1) + linerWeight1);
+                        if (gsm2 > 0 && linerWeight2 > 0)
+                        {
+                            inventory.SetStock(row, gsm2, inventory.GetStock(row, gsm2) + linerWeight2);
+                        }
                     }
                     else
                     {
                         // Fallback to general stock
                         inventory.GeneralPaperStock += paperWeight;
-                        inventory.GeneralLinerStock += linerWeight;
+                        inventory.GeneralLinerStock += (linerWeight1 + linerWeight2);
                     }
                 }
                 else if (row >= 26 && row <= 52)
                 {
                     // Restore directly to table
-                    inventory.SetStock(row, gsm, inventory.GetStock(row, gsm) + paperWeight);
-                    inventory.SetStock(row, topPaper, inventory.GetStock(row, topPaper) + linerWeight);
+                    inventory.SetStock(row, gsm1, inventory.GetStock(row, gsm1) + paperWeight);
+                    inventory.SetStock(row, gsm1, inventory.GetStock(row, gsm1) + linerWeight1);
+                    if (gsm2 > 0 && linerWeight2 > 0)
+                    {
+                        inventory.SetStock(row, gsm2, inventory.GetStock(row, gsm2) + linerWeight2);
+                    }
                 }
                 else
                 {
                     // row > 52, restore to general stock
                     inventory.GeneralPaperStock += paperWeight;
-                    inventory.GeneralLinerStock += linerWeight;
+                    inventory.GeneralLinerStock += (linerWeight1 + linerWeight2);
                 }
 
                 // Save updated inventory
@@ -484,24 +521,24 @@ namespace shreeji_packaging.Forms
             if (dataGridView1.Columns[e.ColumnIndex].Name != "Actions") return;
 
             var record = _customer.Records[e.RowIndex];
-            var result = MessageBox.Show($"Delete record '{record.BoxName}'?", "Confirm Delete", 
+            var result = MessageBox.Show($"Delete record '{record.BoxName}'?", "Confirm Delete",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            
+
             if (result == DialogResult.Yes)
             {
                 // Restore stock before deleting
                 RestoreStockFromRecord(record);
-                
+
                 // Remove from in-memory list
                 _customer.Records.RemoveAt(e.RowIndex);
-                
+
                 // Delete the stored JSON file
                 try
                 {
-                    var recordsDir = Path.Combine(StorageService.StorageRoot, 
+                    var recordsDir = Path.Combine(StorageService.StorageRoot,
                         StorageService.MakeSafeName(_customer.Name), "records");
                     var files = Directory.GetFiles(recordsDir, "*.json").OrderBy(f => f).ToArray();
-                    
+
                     // Find and delete the matching file (simplified - in real app you'd match by timestamp or ID)
                     if (files.Length > e.RowIndex)
                     {
@@ -512,10 +549,10 @@ namespace shreeji_packaging.Forms
                 {
                     // Ignore file deletion errors
                 }
-                
+
                 RefreshGrid();
                 statusLabel.Text = "Record deleted successfully";
-                
+
                 Timer timer = new Timer() { Interval = 3000 };
                 timer.Tick += (s, args) =>
                 {

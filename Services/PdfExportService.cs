@@ -65,7 +65,7 @@ namespace shreeji_packaging.Services
             yPosition += 30;
 
             // Define columns with proper widths for landscape A4 (width ~ 794 points)
-            // We have 11 columns, so we need to distribute the width carefully
+            // We have 12 columns now (added separate liner weight columns for GSM1 and GSM2)
             // Using proportional widths that will be scaled to fit page width
             List<ColumnDefinition> columns = new List<ColumnDefinition>
             {
@@ -79,7 +79,8 @@ namespace shreeji_packaging.Services
                 new ColumnDefinition { Header = "Paper Usage", Width = 75 },
                 new ColumnDefinition { Header = "Box Qty", Width = 55 },
                 new ColumnDefinition { Header = "Paper Weight (kg)", Width = 95 },
-                new ColumnDefinition { Header = "Liner Weight (kg)", Width = 95 }
+                new ColumnDefinition { Header = "Liner Weight 1 (kg)", Width = 95 },
+                new ColumnDefinition { Header = "Liner Weight 2 (kg)", Width = 95 }
             };
 
             double totalWidth = columns.Sum(c => c.Width);
@@ -161,6 +162,48 @@ namespace shreeji_packaging.Services
                 if (string.IsNullOrEmpty(sheetSize))
                     sheetSize = "-";
 
+                // Calculate individual liner weights for each GSM
+                // Parse sheet size to get dimensions
+                double fullLength = 0, fullBreadth = 0;
+                if (!string.IsNullOrEmpty(record.SheetSizeFull))
+                {
+                    var parts = record.SheetSizeFull.Split('x');
+                    if (parts.Length == 2)
+                    {
+                        double.TryParse(parts[0].Trim(), out fullLength);
+                        double.TryParse(parts[1].Trim(), out fullBreadth);
+                    }
+                }
+
+                // Calculate base liner count per box (without half sheet multiplier)
+                double baseLinerCountPerBox = (record.Ply - 1) / 2.0;
+                
+                // Calculate liner weights per GSM
+                double linerWeightPerBox1 = 0;
+                double linerWeightPerBox2 = 0;
+                if (fullLength > 0 && fullBreadth > 0)
+                {
+                    if (record.GSM2 > 0)
+                    {
+                        // When 2 GSMs are entered:
+                        // Liner 1: Sheet size × (GSM1 + 40) / 1550 / 1000 (40 is fixed value)
+                        linerWeightPerBox1 = (fullLength * fullBreadth * (record.GSM + 40)) / 1550.0 / 1000.0;
+                        // Liner 2: Sheet size × GSM2 / 1550 / 1000
+                        linerWeightPerBox2 = (fullLength * fullBreadth * record.GSM2) / 1550.0 / 1000.0;
+                    }
+                    else
+                    {
+                        // Single GSM: calculate GSM + GSM*40/100, then add GSM again
+                        // Example: 120 + 120*40/100 = 168, then 168 + 120 = 288
+                        double linerGsmValue = record.GSM + record.GSM * 0.4 + record.GSM; // GSM*2.4
+                        linerWeightPerBox1 = (fullLength * fullBreadth * linerGsmValue) / 1550.0 / 1000.0;
+                    }
+                }
+                
+                // Total weights = weight per liner * base liner count * number of boxes
+                double linerWeightTotal1 = linerWeightPerBox1 * baseLinerCountPerBox * record.NumberOfBoxes;
+                double linerWeightTotal2 = linerWeightPerBox2 * baseLinerCountPerBox * record.NumberOfBoxes;
+
                 // Prepare cell values
                 string[] cellValues = new string[]
                 {
@@ -174,7 +217,8 @@ namespace shreeji_packaging.Services
                     record.PaperUsage.ToString("0.##"),
                     record.NumberOfBoxes.ToString(),
                     record.PaperWeightTotal.ToString("0.###"),
-                    record.LinerWeightTotal.ToString("0.###")
+                    linerWeightTotal1 > 0 ? linerWeightTotal1.ToString("0.###") : "-",
+                    linerWeightTotal2 > 0 ? linerWeightTotal2.ToString("0.###") : "-"
                 };
 
                 // Draw row background

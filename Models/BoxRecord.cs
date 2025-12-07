@@ -6,7 +6,11 @@ namespace shreeji_packaging.Models
         public string BoxSize { get; set; } // Format: L x B x H
         public string SheetSize { get; set; } // Calculated (Half)
         public string SheetSizeFull { get; set; } // Calculated (Full)
-        public double GSM { get; set; } // User input
+
+        // GSM values
+        public double GSM { get; set; } // Primary GSM (first input)
+        public double GSM2 { get; set; } // Optional secondary GSM (second input)
+
         public int Ply { get; set; } // Odd number
         public double LastPlyValue { get; set; } // User input
         public double Gramage { get; set; } // Calculated

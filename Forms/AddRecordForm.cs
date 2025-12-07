@@ -12,12 +12,13 @@ namespace shreeji_packaging.Forms
     {
         private Customer _customer;
         private BoxRecord _editingRecord;
-        private TextBox txtBoxName, txtLength, txtBreadth, txtHeight, txtGSM, txtPly, txtLastPly, txtDetail;
+        private TextBox txtBoxName, txtLength, txtBreadth, txtHeight, txtGSM, txtGSM2, txtPly, txtLastPly, txtDetail;
         private TextBox txtSheetSize, txtSheetSizeFull, txtGramage, txtPaper, txtLiner;
         private TextBox txtSellRate, txtNumBoxes, txtPerBoxRate, txtGrandTotal;
         private TextBox txtLamination, txtPrinting, txtPunching, txtPasting, txtSidePasting;
         private TextBox txtLaminationCalculated, txtLaminationTotal;
         private TextBox txtPaperWeightPerBox, txtPaperWeightTotal, txtLinerWeightPerBox, txtLinerWeightTotal;
+        private TextBox txtLiner1WeightPerBox, txtLiner1WeightTotal, txtLiner2WeightPerBox, txtLiner2WeightTotal;
         private CheckBox chkHalfSheet;
         private CheckBox chkUseSheetSize;
         private Button btnSave;
@@ -57,6 +58,10 @@ namespace shreeji_packaging.Forms
             txtPaperWeightTotal.Text = "";
             txtLinerWeightPerBox.Text = "";
             txtLinerWeightTotal.Text = "";
+            txtLiner1WeightPerBox.Text = "";
+            txtLiner1WeightTotal.Text = "";
+            txtLiner2WeightPerBox.Text = "";
+            txtLiner2WeightTotal.Text = "";
         }
 
         public AddRecordForm(Customer customer, BoxRecord existingRecord)
@@ -118,7 +123,7 @@ namespace shreeji_packaging.Forms
 
             // Row 2 - Dimensions
             Label lblDimensions = new Label() { Text = "Dimensions (L × B × H):", Left = 20, Top = 65, Width = 180, Height = 20, Font = labelFont };
-            
+
             Label lblLength = new Label() { Text = "Length:", Left = 20, Top = 95, Width = 60, Height = 20, Font = labelFont };
             txtLength = new TextBox() { Left = 85, Top = 92, Width = 80, Height = 25, Font = inputFont };
 
@@ -130,15 +135,18 @@ namespace shreeji_packaging.Forms
 
             // Row 3 - Material Properties
             Label lblMaterial = new Label() { Text = "Material Properties:", Left = 20, Top = 135, Width = 150, Height = 20, Font = labelFont };
-            
-            Label lblGSM = new Label() { Text = "GSM:", Left = 20, Top = 165, Width = 50, Height = 20, Font = labelFont };
-            txtGSM = new TextBox() { Left = 75, Top = 162, Width = 90, Height = 25, Font = inputFont };
 
-            Label lblPly = new Label() { Text = "Ply (Odd):", Left = 190, Top = 165, Width = 80, Height = 20, Font = labelFont };
-            txtPly = new TextBox() { Left = 275, Top = 162, Width = 90, Height = 25, Font = inputFont };
+            Label lblGSM = new Label() { Text = "GSM 1:", Left = 20, Top = 165, Width = 60, Height = 20, Font = labelFont };
+            txtGSM = new TextBox() { Left = 85, Top = 162, Width = 80, Height = 25, Font = inputFont };
 
-            Label lblLastPly = new Label() { Text = "Top Paper:", Left = 390, Top = 165, Width = 100, Height = 20, Font = labelFont };
-            txtLastPly = new TextBox() { Left = 495, Top = 162, Width = 100, Height = 25, Font = inputFont };
+            Label lblGSM2 = new Label() { Text = "GSM 2 (opt.):", Left = 180, Top = 165, Width = 100, Height = 20, Font = labelFont };
+            txtGSM2 = new TextBox() { Left = 285, Top = 162, Width = 80, Height = 25, Font = inputFont };
+
+            Label lblPly = new Label() { Text = "Ply (Odd):", Left = 380, Top = 165, Width = 80, Height = 20, Font = labelFont };
+            txtPly = new TextBox() { Left = 465, Top = 162, Width = 60, Height = 25, Font = inputFont };
+
+            Label lblLastPly = new Label() { Text = "Top Paper:", Left = 540, Top = 165, Width = 100, Height = 20, Font = labelFont };
+            txtLastPly = new TextBox() { Left = 645, Top = 162, Width = 80, Height = 25, Font = inputFont };
 
             // Row 4 - Detail
             Label lblDetail = new Label() { Text = "Detail:", Left = 20, Top = 205, Width = 60, Height = 20, Font = labelFont };
@@ -147,7 +155,7 @@ namespace shreeji_packaging.Forms
             inputPanel.Controls.AddRange(new Control[] {
                 lblBoxName, txtBoxName,
                 lblDimensions, lblLength, txtLength, lblBreadth, txtBreadth, lblHeight, txtHeight,
-                lblMaterial, lblGSM, txtGSM, lblPly, txtPly, lblLastPly, txtLastPly,
+                lblMaterial, lblGSM, txtGSM, lblGSM2, txtGSM2, lblPly, txtPly, lblLastPly, txtLastPly,
                 lblDetail, txtDetail
             });
             this.Controls.Add(inputPanel);
@@ -267,6 +275,19 @@ namespace shreeji_packaging.Forms
             Label lblLinerWeightTotal = new Label() { Text = "Liner weight total (kg):", Left = 330, Top = 390, Width = 190, Height = 20, Font = labelFont };
             txtLinerWeightTotal = new TextBox() { Left = 530, Top = 387, Width = 110, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
+            // Detailed liner weights per GSM
+            Label lblLiner1WeightPerBox = new Label() { Text = "Liner 1 wt/box (kg):", Left = 20, Top = 425, Width = 180, Height = 20, Font = labelFont };
+            txtLiner1WeightPerBox = new TextBox() { Left = 210, Top = 422, Width = 100, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+
+            Label lblLiner1WeightTotal = new Label() { Text = "Liner 1 total (kg):", Left = 330, Top = 425, Width = 190, Height = 20, Font = labelFont };
+            txtLiner1WeightTotal = new TextBox() { Left = 530, Top = 422, Width = 110, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+
+            Label lblLiner2WeightPerBox = new Label() { Text = "Liner 2 wt/box (kg):", Left = 20, Top = 460, Width = 180, Height = 20, Font = labelFont };
+            txtLiner2WeightPerBox = new TextBox() { Left = 210, Top = 457, Width = 100, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+
+            Label lblLiner2WeightTotal = new Label() { Text = "Liner 2 total (kg):", Left = 330, Top = 460, Width = 190, Height = 20, Font = labelFont };
+            txtLiner2WeightTotal = new TextBox() { Left = 530, Top = 457, Width = 110, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+
 
             resultPanel.Controls.AddRange(new Control[] {
                 lblSheetSize, txtSheetSize,
@@ -290,7 +311,11 @@ namespace shreeji_packaging.Forms
                 lblPaperWeightPerBox, txtPaperWeightPerBox,
                 lblPaperWeightTotal, txtPaperWeightTotal,
                 lblLinerWeightPerBox, txtLinerWeightPerBox,
-                lblLinerWeightTotal, txtLinerWeightTotal
+                lblLinerWeightTotal, txtLinerWeightTotal,
+                lblLiner1WeightPerBox, txtLiner1WeightPerBox,
+                lblLiner1WeightTotal, txtLiner1WeightTotal,
+                lblLiner2WeightPerBox, txtLiner2WeightPerBox,
+                lblLiner2WeightTotal, txtLiner2WeightTotal
             });
             this.Controls.Add(resultPanel);
 
@@ -318,6 +343,7 @@ namespace shreeji_packaging.Forms
             txtBreadth.TextChanged += InputChanged;
             txtHeight.TextChanged += InputChanged;
             txtGSM.TextChanged += InputChanged;
+            txtGSM2.TextChanged += InputChanged;
             txtPly.TextChanged += InputChanged;
             txtLastPly.TextChanged += InputChanged;
             txtSellRate.TextChanged += InputChanged;
@@ -340,12 +366,12 @@ namespace shreeji_packaging.Forms
         private void ChkUseSheetSize_CheckedChanged(object sender, EventArgs e)
         {
             bool useSheetSize = chkUseSheetSize.Checked;
-            
+
             // Enable/disable dimension inputs
             txtLength.Enabled = !useSheetSize;
             txtBreadth.Enabled = !useSheetSize;
             txtHeight.Enabled = !useSheetSize;
-            
+
             // Set visual appearance for disabled fields
             if (useSheetSize)
             {
@@ -359,7 +385,7 @@ namespace shreeji_packaging.Forms
                 txtBreadth.BackColor = Color.White;
                 txtHeight.BackColor = Color.White;
             }
-            
+
             // Enable/disable sheet size full input
             txtSheetSizeFull.ReadOnly = !useSheetSize;
             if (useSheetSize)
@@ -372,7 +398,7 @@ namespace shreeji_packaging.Forms
             {
                 txtSheetSizeFull.BackColor = Color.FromArgb(236, 240, 241);
             }
-            
+
             // Trigger recalculation
             InputChanged(null, null);
         }
@@ -381,15 +407,15 @@ namespace shreeji_packaging.Forms
         {
             txtBoxName.Text = record.BoxName ?? "";
             txtDetail.Text = record.Detail ?? "";
-            
+
             // Check if this record was saved using direct sheet size mode
             bool wasUsingSheetSize = !string.IsNullOrEmpty(record.BoxSize) && record.BoxSize.StartsWith("Sheet Size:");
-            
+
             if (wasUsingSheetSize)
             {
                 // This record used direct sheet size mode
                 chkUseSheetSize.Checked = true;
-                
+
                 // Extract sheet size from BoxSize or use SheetSizeFull
                 if (!string.IsNullOrEmpty(record.SheetSizeFull))
                 {
@@ -409,7 +435,7 @@ namespace shreeji_packaging.Forms
             {
                 // Normal mode: parse box dimensions
                 chkUseSheetSize.Checked = false;
-                
+
                 if (!string.IsNullOrEmpty(record.BoxSize))
                 {
                     var parts = record.BoxSize.Split('x');
@@ -421,8 +447,9 @@ namespace shreeji_packaging.Forms
                     }
                 }
             }
-            
+
             txtGSM.Text = record.GSM.ToString();
+            txtGSM2.Text = record.GSM2 > 0 ? record.GSM2.ToString() : "";
             txtPly.Text = record.Ply.ToString();
             txtLastPly.Text = record.LastPlyValue.ToString();
             txtSellRate.Text = record.SellRate.ToString();
@@ -433,7 +460,7 @@ namespace shreeji_packaging.Forms
             txtPasting.Text = record.PastingPerBox.ToString();
             txtSidePasting.Text = record.SidePastingPerBox.ToString();
             chkHalfSheet.Checked = record.UseHalfSheetForUsage;
-            
+
             // Trigger calculation to update all calculated fields
             InputChanged(null, null);
         }
@@ -443,6 +470,7 @@ namespace shreeji_packaging.Forms
             try
             {
                 if (!double.TryParse(txtGSM.Text, out double gsm)) return;
+                double gsm2 = ParseOptional(txtGSM2.Text);
                 if (!int.TryParse(txtPly.Text, out int ply)) return;
                 if (!double.TryParse(txtLastPly.Text, out double topPaper)) return;
 
@@ -465,21 +493,21 @@ namespace shreeji_packaging.Forms
                         ClearCalculatedFields();
                         return;
                     }
-                    
+
                     var parts = txtSheetSizeFull.Text.Split('x');
                     if (parts.Length != 2)
                     {
                         ClearCalculatedFields();
                         return;
                     }
-                    
-                    if (!double.TryParse(parts[0].Trim(), out fullLength) || 
+
+                    if (!double.TryParse(parts[0].Trim(), out fullLength) ||
                         !double.TryParse(parts[1].Trim(), out fullBreadth))
                     {
                         ClearCalculatedFields();
                         return;
                     }
-                    
+
                     // For display purposes, calculate approximate box dimensions (optional, for half sheet calculation)
                     // We can't reverse calculate L, B, H from fullLength and fullBreadth uniquely
                     // So we'll leave txtSheetSize empty or show the full sheet only
@@ -502,7 +530,29 @@ namespace shreeji_packaging.Forms
                     fullBreadth = (l + b) * 2 + 1.5;
                 }
 
-                double gramage = CalculationService.CalculateGramage(gsm, ply, topPaper);
+                // Gramage calculation: different logic for single GSM vs 2 GSMs
+                double gramage;
+                if (gsm2 > 0)
+                {
+                    // When 2 GSMs are entered:
+                    // Step 1: Calculate baseVal = GSM1 + GSM1*40/100 (this gives 140 for GSM1=100)
+                    double baseVal = gsm + gsm * 0.4;
+                    // Step 2: Add GSM2
+                    double result = baseVal + gsm2;
+                    // Step 3: Multiply by 2 based on ply (ply=3: no multiply, ply=5: multiply once, ply=7: multiply twice)
+                    int multiplyCount = (ply - 3) / 2;
+                    for (int i = 0; i < multiplyCount; i++)
+                    {
+                        result = result * 2;
+                    }
+                    // Step 4: Add topPaper
+                    gramage = result + topPaper;
+                }
+                else
+                {
+                    // Single GSM: use existing logic (unchanged)
+                    gramage = CalculationService.CalculateGramage(gsm, ply, topPaper);
+                }
                 txtGramage.Text = gramage.ToString("0.##");
 
                 int numBoxes = 0;
@@ -550,17 +600,49 @@ namespace shreeji_packaging.Forms
                 txtLaminationCalculated.Text = laminationPerBox.ToString("0.##");
                 txtLaminationTotal.Text = laminationTotal.ToString("0.##");
 
-                double paperWeightPerBox = (fullLength * fullBreadth * topPaper * paperPerBox) / 1550.0 / 1000.0;
+                // Paper weight: calculate per unit (1 paper per box), not per usage
+                // Weight should remain the same regardless of half sheet usage
+                double paperWeightPerBox = (fullLength * fullBreadth * topPaper * 1.0) / 1550.0 / 1000.0;
                 double paperWeightTotal = paperWeightPerBox * numBoxes;
 
-                double linerBaseGsm = CalculationService.CalculateLinerBaseGsm(gsm, ply);
-                double linerWeightPerBox = (fullLength * fullBreadth * linerBaseGsm * linerPerBox) / 1550.0 / 1000.0;
-                double linerWeightTotal = linerWeightPerBox * numBoxes;
+                // Liner weights: calculate per unit liner (base count without multiplier), not per usage
+                // Weight should remain the same regardless of half sheet usage
+                // Base liner count per box = (ply - 1) / 2.0 (without the half sheet multiplier)
+                double baseLinerCountPerBox = (ply - 1) / 2.0;
+
+                // Liner weight calculation: different logic for single GSM vs 2 GSMs
+                double linerWeightPerBox1;
+                double linerWeightPerBox2 = 0;
+
+                if (gsm2 > 0)
+                {
+                    // When 2 GSMs are entered:
+                    // Liner 1: Sheet size × (GSM1 + 40) / 1550 / 1000 (40 is fixed value)
+                    linerWeightPerBox1 = (fullLength * fullBreadth * (gsm + 40)) / 1550.0 / 1000.0;
+                    // Liner 2: Sheet size × GSM2 / 1550 / 1000
+                    linerWeightPerBox2 = (fullLength * fullBreadth * gsm2) / 1550.0 / 1000.0;
+                }
+                else
+                {
+                    // Single GSM: calculate GSM + GSM*40/100, then add GSM again
+                    // Example: 120 + 120*40/100 = 168, then 168 + 120 = 288
+                    double linerGsmValue = gsm + gsm * 0.4 + gsm; // GSM*2.4
+                    linerWeightPerBox1 = (fullLength * fullBreadth * linerGsmValue) / 1550.0 / 1000.0;
+                }
+                // Combined weight per box (using base liner count, not multiplied usage)
+                double linerWeightPerBoxCombined = (linerWeightPerBox1 + linerWeightPerBox2) * baseLinerCountPerBox;
+                double linerWeightTotalCombined = linerWeightPerBoxCombined * numBoxes;
 
                 txtPaperWeightPerBox.Text = FormatWeight(paperWeightPerBox);
                 txtPaperWeightTotal.Text = FormatWeight(paperWeightTotal);
-                txtLinerWeightPerBox.Text = FormatWeight(linerWeightPerBox);
-                txtLinerWeightTotal.Text = FormatWeight(linerWeightTotal);
+                // Combined liner values (using base liner count, not multiplied usage)
+                txtLinerWeightPerBox.Text = FormatWeight(linerWeightPerBoxCombined);
+                txtLinerWeightTotal.Text = FormatWeight(linerWeightTotalCombined);
+                // Per-GSM liner values (using base liner count, not multiplied usage)
+                txtLiner1WeightPerBox.Text = FormatWeight(linerWeightPerBox1 * baseLinerCountPerBox);
+                txtLiner1WeightTotal.Text = FormatWeight(linerWeightPerBox1 * baseLinerCountPerBox * numBoxes);
+                txtLiner2WeightPerBox.Text = FormatWeight(linerWeightPerBox2 * baseLinerCountPerBox);
+                txtLiner2WeightTotal.Text = FormatWeight(linerWeightPerBox2 * baseLinerCountPerBox * numBoxes);
 
                 double grandTotal = perBoxWithExtras * numBoxes + laminationTotal;
                 txtGrandTotal.Text = grandTotal.ToString("0.##");
@@ -571,7 +653,7 @@ namespace shreeji_packaging.Forms
             }
         }
 
-        private bool DeductStockFromInventory(int sheetLength, int gsm, int topPaper, double paperWeight, double linerWeight)
+        private bool DeductStockFromInventory(int sheetLength, int gsm1, int gsm2, int topPaper, double paperWeight, double linerWeight1, double linerWeight2)
         {
             var inventory = StorageService.LoadInventory();
             int row = sheetLength;
@@ -582,15 +664,15 @@ namespace shreeji_packaging.Forms
                 // Subtract from general stock
                 if (!inventory.DeductGeneralPaper(paperWeight))
                 {
-                    MessageBox.Show("Insufficient paper stock in general inventory!", "Low Stock", 
+                    MessageBox.Show("Insufficient paper stock in general inventory!", "Low Stock",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return false;
                 }
-                if (!inventory.DeductGeneralLiner(linerWeight))
+                if (!inventory.DeductGeneralLiner(linerWeight1 + linerWeight2))
                 {
                     // Rollback paper deduction
                     inventory.GeneralPaperStock += paperWeight;
-                    MessageBox.Show("Insufficient liner stock in general inventory!", "Low Stock", 
+                    MessageBox.Show("Insufficient liner stock in general inventory!", "Low Stock",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return false;
                 }
@@ -602,19 +684,32 @@ namespace shreeji_packaging.Forms
                 if (row >= 26 && row <= 52)
                 {
                     // Deduct from table
-                    if (!inventory.DeductStock(row, gsm, paperWeight))
+                    if (!inventory.DeductStock(row, gsm1, paperWeight))
                     {
-                        MessageBox.Show($"Insufficient paper stock for row {row}, GSM {gsm}!", "Low Stock", 
+                        MessageBox.Show($"Insufficient paper stock for row {row}, GSM {gsm1}!", "Low Stock",
                             MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return false;
                     }
-                    if (!inventory.DeductStock(row, topPaper, linerWeight))
+                    // Deduct liner for GSM1
+                    if (linerWeight1 > 0 && !inventory.DeductStock(row, gsm1, linerWeight1))
                     {
                         // Rollback paper deduction
-                        inventory.SetStock(row, gsm, inventory.GetStock(row, gsm) + paperWeight);
-                        MessageBox.Show($"Insufficient liner stock for row {row}, Top Paper {topPaper}!", "Low Stock", 
+                        inventory.SetStock(row, gsm1, inventory.GetStock(row, gsm1) + paperWeight);
+                        MessageBox.Show($"Insufficient liner stock for row {row}, GSM {gsm1}!", "Low Stock",
                             MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return false;
+                    }
+                    // Deduct liner for GSM2 (optional)
+                    if (gsm2 > 0 && linerWeight2 > 0)
+                    {
+                        if (!inventory.DeductStock(row, gsm2, linerWeight2))
+                        {
+                            // Rollback previous deductions
+                            inventory.SetStock(row, gsm1, inventory.GetStock(row, gsm1) + paperWeight + linerWeight1);
+                            MessageBox.Show($"Insufficient liner stock for row {row}, GSM {gsm2}!", "Low Stock",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return false;
+                        }
                     }
                 }
                 else
@@ -622,14 +717,14 @@ namespace shreeji_packaging.Forms
                     // Fallback to general stock
                     if (!inventory.DeductGeneralPaper(paperWeight))
                     {
-                        MessageBox.Show("Insufficient paper stock in general inventory!", "Low Stock", 
+                        MessageBox.Show("Insufficient paper stock in general inventory!", "Low Stock",
                             MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return false;
                     }
-                    if (!inventory.DeductGeneralLiner(linerWeight))
+                    if (!inventory.DeductGeneralLiner(linerWeight1 + linerWeight2))
                     {
                         inventory.GeneralPaperStock += paperWeight;
-                        MessageBox.Show("Insufficient liner stock in general inventory!", "Low Stock", 
+                        MessageBox.Show("Insufficient liner stock in general inventory!", "Low Stock",
                             MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return false;
                     }
@@ -638,19 +733,30 @@ namespace shreeji_packaging.Forms
             else if (row >= 26 && row <= 52)
             {
                 // Use directly
-                if (!inventory.DeductStock(row, gsm, paperWeight))
+                if (!inventory.DeductStock(row, gsm1, paperWeight))
                 {
-                    MessageBox.Show($"Insufficient paper stock for row {row}, GSM {gsm}!", "Low Stock", 
+                    MessageBox.Show($"Insufficient paper stock for row {row}, GSM {gsm1}!", "Low Stock",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return false;
                 }
-                if (!inventory.DeductStock(row, topPaper, linerWeight))
+                if (linerWeight1 > 0 && !inventory.DeductStock(row, gsm1, linerWeight1))
                 {
                     // Rollback paper deduction
-                    inventory.SetStock(row, gsm, inventory.GetStock(row, gsm) + paperWeight);
-                    MessageBox.Show($"Insufficient liner stock for row {row}, Top Paper {topPaper}!", "Low Stock", 
+                    inventory.SetStock(row, gsm1, inventory.GetStock(row, gsm1) + paperWeight);
+                    MessageBox.Show($"Insufficient liner stock for row {row}, GSM {gsm1}!", "Low Stock",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return false;
+                }
+                if (gsm2 > 0 && linerWeight2 > 0)
+                {
+                    if (!inventory.DeductStock(row, gsm2, linerWeight2))
+                    {
+                        // Rollback previous deductions
+                        inventory.SetStock(row, gsm1, inventory.GetStock(row, gsm1) + paperWeight + linerWeight1);
+                        MessageBox.Show($"Insufficient liner stock for row {row}, GSM {gsm2}!", "Low Stock",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return false;
+                    }
                 }
             }
             else
@@ -658,14 +764,14 @@ namespace shreeji_packaging.Forms
                 // row > 52, subtract from general stock
                 if (!inventory.DeductGeneralPaper(paperWeight))
                 {
-                    MessageBox.Show("Insufficient paper stock in general inventory!", "Low Stock", 
+                    MessageBox.Show("Insufficient paper stock in general inventory!", "Low Stock",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return false;
                 }
-                if (!inventory.DeductGeneralLiner(linerWeight))
+                if (!inventory.DeductGeneralLiner(linerWeight1 + linerWeight2))
                 {
                     inventory.GeneralPaperStock += paperWeight;
-                    MessageBox.Show("Insufficient liner stock in general inventory!", "Low Stock", 
+                    MessageBox.Show("Insufficient liner stock in general inventory!", "Low Stock",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return false;
                 }
@@ -678,17 +784,20 @@ namespace shreeji_packaging.Forms
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
-            // Validate GSM and Top Paper
+            // Validate GSM values and Top Paper
             int[] validValues = { 80, 90, 100, 120, 150, 180, 200, 230, 250, 300 };
             double.TryParse(txtGSM.Text, out double gsmValue);
+            double.TryParse(txtGSM2.Text, out double gsm2Value);
             double.TryParse(txtLastPly.Text, out double topPaperValue);
-            
+
             int gsmInt = (int)gsmValue;
+            int gsm2Int = (int)gsm2Value;
             int topPaperInt = (int)topPaperValue;
-            
-            if (!validValues.Contains(gsmInt) || !validValues.Contains(topPaperInt))
+
+            if (!validValues.Contains(gsmInt) || !validValues.Contains(topPaperInt) ||
+                (gsm2Int != 0 && !validValues.Contains(gsm2Int)))
             {
-                MessageBox.Show("GSM and Top Paper should be one of: 80, 90, 100, 120, 150, 180, 200, 230, 250, 300", "Validation Error", 
+                MessageBox.Show("GSM, optional GSM 2 and Top Paper should be one of: 80, 90, 100, 120, 150, 180, 200, 230, 250, 300", "Validation Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -697,7 +806,7 @@ namespace shreeji_packaging.Forms
             double fullLength, fullBreadth;
             double l = 0, b = 0, h = 0;
             string boxSizeStr;
-            
+
             if (chkUseSheetSize.Checked)
             {
                 // Parse sheet size directly
@@ -707,46 +816,78 @@ namespace shreeji_packaging.Forms
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-                
+
                 var parts = txtSheetSizeFull.Text.Split('x');
-                if (parts.Length != 2 || 
-                    !double.TryParse(parts[0].Trim(), out fullLength) || 
+                if (parts.Length != 2 ||
+                    !double.TryParse(parts[0].Trim(), out fullLength) ||
                     !double.TryParse(parts[1].Trim(), out fullBreadth))
                 {
                     MessageBox.Show("Please enter Sheet Size (Full) in the format: 'length x breadth'", "Validation Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-                
+
                 boxSizeStr = $"Sheet Size: {fullLength} x {fullBreadth}";
             }
             else
             {
                 // Original mode: calculate from L, B, H
-                if (!double.TryParse(txtLength.Text, out l) || 
-                    !double.TryParse(txtBreadth.Text, out b) || 
+                if (!double.TryParse(txtLength.Text, out l) ||
+                    !double.TryParse(txtBreadth.Text, out b) ||
                     !double.TryParse(txtHeight.Text, out h))
                 {
                     MessageBox.Show("Please enter valid Length, Breadth, and Height values.", "Validation Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-                
+
                 fullLength = b + h + 1;
                 fullBreadth = (l + b) * 2 + 1.5;
                 boxSizeStr = $"{l} x {b} x {h}";
             }
-            
-            double.TryParse(txtPaperWeightTotal.Text, out double paperWeightTotal);
-            double.TryParse(txtLinerWeightTotal.Text, out double linerWeightTotal);
 
-            // Deduct stock
-            if (!DeductStockFromInventory((int)fullLength, gsmInt, topPaperInt, paperWeightTotal, linerWeightTotal))
+            double.TryParse(txtPaperWeightTotal.Text, out double paperWeightTotal);
+
+            // Compute liner weights per GSM for stock deduction
+            int.TryParse(txtNumBoxes.Text, out int numBoxesLocal);
+            numBoxesLocal = Math.Max(0, numBoxesLocal);
+            int.TryParse(txtPly.Text, out int plyValue);
+
+            // Calculate base liner count per box (without half sheet multiplier)
+            // Weight should remain the same regardless of half sheet usage
+            double baseLinerCountPerBox = (plyValue - 1) / 2.0;
+
+            // Liner weight calculation: different logic for single GSM vs 2 GSMs
+            double linerWeightPerBox1;
+            double linerWeightPerBox2 = 0;
+
+            if (gsm2Int > 0)
+            {
+                // When 2 GSMs are entered:
+                // Liner 1: Sheet size × (GSM1 + 40) / 1550 / 1000 (40 is fixed value)
+                linerWeightPerBox1 = (fullLength * fullBreadth * (gsmInt + 40)) / 1550.0 / 1000.0;
+                // Liner 2: Sheet size × GSM2 / 1550 / 1000
+                linerWeightPerBox2 = (fullLength * fullBreadth * gsm2Int) / 1550.0 / 1000.0;
+            }
+            else
+            {
+                // Single GSM: calculate GSM + GSM*40/100, then add GSM again
+                // Example: 120 + 120*40/100 = 168, then 168 + 120 = 288
+                double linerGsmValue = gsmInt + gsmInt * 0.4 + gsmInt; // GSM*2.4
+                linerWeightPerBox1 = (fullLength * fullBreadth * linerGsmValue) / 1550.0 / 1000.0;
+            }
+
+            // Total weight = weight per liner * base liner count per box * number of boxes
+            double linerWeightTotal1 = linerWeightPerBox1 * baseLinerCountPerBox * numBoxesLocal;
+            double linerWeightTotal2 = linerWeightPerBox2 * baseLinerCountPerBox * numBoxesLocal;
+
+            // Deduct stock (paper based on primary GSM/top paper; liner based on GSM1 and GSM2)
+            if (!DeductStockFromInventory((int)fullLength, gsmInt, gsm2Int, topPaperInt, paperWeightTotal, linerWeightTotal1, linerWeightTotal2))
             {
                 return; // Error message already shown
             }
 
-            int.TryParse(txtPly.Text, out int plyValue);
+            // plyValue is already parsed above, reuse it
             double.TryParse(txtGramage.Text, out double gramageValue);
             double.TryParse(txtPaper.Text, out double paperUsage);
             double.TryParse(txtLiner.Text, out double linerUsage);
@@ -774,6 +915,7 @@ namespace shreeji_packaging.Forms
                 _editingRecord.SheetSize = txtSheetSize.Text;
                 _editingRecord.SheetSizeFull = txtSheetSizeFull.Text;
                 _editingRecord.GSM = gsmValue;
+                _editingRecord.GSM2 = gsm2Value;
                 _editingRecord.Ply = plyValue;
                 _editingRecord.LastPlyValue = topPaperValue;
                 _editingRecord.Gramage = gramageValue;
@@ -801,7 +943,7 @@ namespace shreeji_packaging.Forms
                 // Delete old file and save updated record
                 try
                 {
-                    var recordsDir = Path.Combine(StorageService.StorageRoot, 
+                    var recordsDir = Path.Combine(StorageService.StorageRoot,
                         StorageService.MakeSafeName(_customer.Name), "records");
                     if (Directory.Exists(recordsDir))
                     {
@@ -828,6 +970,7 @@ namespace shreeji_packaging.Forms
                     SheetSize = txtSheetSize.Text,
                     SheetSizeFull = txtSheetSizeFull.Text,
                     GSM = gsmValue,
+                    GSM2 = gsm2Value,
                     Ply = plyValue,
                     LastPlyValue = topPaperValue,
                     Gramage = gramageValue,
