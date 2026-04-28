@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace shreeji_packaging.Models
 {
     public class BoxRecord
@@ -34,5 +36,6 @@ namespace shreeji_packaging.Models
         public double LinerWeightTotal { get; set; }
         public double FinalTotal { get; set; } // Final payable total
         public string Detail { get; set; }
+        public List<string> ImagePaths { get; set; } = new List<string>(); // Multiple image paths per record
     }
 }

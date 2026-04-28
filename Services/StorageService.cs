@@ -20,7 +20,9 @@ namespace shreeji_packaging.Services
         {
             var customerDir = GetCustomerDirectory(customerName);
             var recordsDir = Path.Combine(customerDir, "records");
+            var imagesDir = Path.Combine(customerDir, "images");
             Directory.CreateDirectory(recordsDir);
+            Directory.CreateDirectory(imagesDir);
         }
 
         public static string[] ListCustomers()
@@ -123,7 +125,76 @@ namespace shreeji_packaging.Services
             }
         }
 
-        // No encryption helpers needed for plain JSON storage
+        // Customer address management
+        public static void SaveCustomerAddress(string customerName, string address)
+        {
+            EnsureCustomerDirectories(customerName);
+            var customerDir = GetCustomerDirectory(customerName);
+            var addressPath = Path.Combine(customerDir, "address.txt");
+            File.WriteAllText(addressPath, address ?? "", Encoding.UTF8);
+        }
+
+        public static string LoadCustomerAddress(string customerName)
+        {
+            var customerDir = GetCustomerDirectory(customerName);
+            var addressPath = Path.Combine(customerDir, "address.txt");
+            if (File.Exists(addressPath))
+            {
+                try
+                {
+                    return File.ReadAllText(addressPath, Encoding.UTF8);
+                }
+                catch
+                {
+                    return "";
+                }
+            }
+            return "";
+        }
+
+        // Image management
+        public static string GetImagesDirectory(string customerName)
+        {
+            EnsureCustomerDirectories(customerName);
+            return Path.Combine(GetCustomerDirectory(customerName), "images");
+        }
+
+        public static string SaveImage(string customerName, string sourceImagePath, string recordId)
+        {
+            var imagesDir = GetImagesDirectory(customerName);
+            var extension = Path.GetExtension(sourceImagePath);
+            var timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-fff");
+            var fileName = $"{recordId}_{timestamp}{extension}";
+            var destPath = Path.Combine(imagesDir, fileName);
+
+            File.Copy(sourceImagePath, destPath, true);
+            return destPath;
+        }
+
+        public static void DeleteImage(string imagePath)
+        {
+            if (File.Exists(imagePath))
+            {
+                try
+                {
+                    File.Delete(imagePath);
+                }
+                catch
+                {
+                    // Ignore deletion errors
+                }
+            }
+        }
+
+        public static List<string> GetRecordImages(string customerName, string recordId)
+        {
+            var imagesDir = GetImagesDirectory(customerName);
+            if (!Directory.Exists(imagesDir)) return new List<string>();
+
+            return Directory.GetFiles(imagesDir, $"{recordId}_*")
+                .OrderBy(f => f)
+                .ToList();
+        }
     }
 }
 

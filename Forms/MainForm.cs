@@ -138,16 +138,32 @@ namespace shreeji_packaging.Forms
             btnExportPdf.FlatAppearance.MouseOverBackColor = Color.FromArgb(211, 84, 0);
             btnExportPdf.Click += BtnExportPdf_Click;
 
+            Button btnPartyDetails = new Button()
+            {
+                Text = "📋 PARTY DETAILS",
+                Width = 160,
+                Height = 40,
+                BackColor = Color.FromArgb(155, 89, 182),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                Location = new Point(390, 15),
+                Cursor = Cursors.Hand
+            };
+            btnPartyDetails.FlatAppearance.BorderSize = 0;
+            btnPartyDetails.FlatAppearance.MouseOverBackColor = Color.FromArgb(142, 68, 173);
+            btnPartyDetails.Click += BtnPartyDetails_Click;
+
             lblRecordsCount = new Label()
             {
                 Text = "Total Records: 0",
                 Font = new Font("Segoe UI", 10, FontStyle.Regular),
                 ForeColor = Color.FromArgb(127, 140, 141),
                 AutoSize = true,
-                Location = new Point(390, 25)
+                Location = new Point(570, 25)
             };
 
-            toolbarPanel.Controls.AddRange(new Control[] { btnAddRecord, btnExportPdf, lblRecordsCount });
+            toolbarPanel.Controls.AddRange(new Control[] { btnAddRecord, btnExportPdf, btnPartyDetails, lblRecordsCount });
 
             // Main Content Panel
             Panel contentPanel = new Panel()
@@ -298,6 +314,30 @@ namespace shreeji_packaging.Forms
             }
         }
 
+        private void BtnPartyDetails_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Load customer address if not already loaded
+                if (string.IsNullOrEmpty(_customer.Address))
+                {
+                    _customer.Address = StorageService.LoadCustomerAddress(_customer.Name);
+                }
+
+                // Load latest records
+                var currentRecords = StorageService.LoadRecords(_customer.Name) ?? _customer.Records;
+                _customer.Records = currentRecords;
+
+                var partyDetailsForm = new PartyDetailsForm(_customer);
+                partyDetailsForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening party details:\n{ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void RefreshGrid()
         {
             if (dataGridView1 == null || _customer?.Records == null) return;
@@ -437,11 +477,11 @@ namespace shreeji_packaging.Forms
                 // Weight should remain the same regardless of half sheet usage
                 int numBoxes = record.NumberOfBoxes;
                 double baseLinerCountPerBox = (record.Ply - 1) / 2.0; // Base liner count without multiplier
-                
+
                 // Liner weight calculation: different logic for single GSM vs 2 GSMs
                 double linerWeightPerBox1;
                 double linerWeightPerBox2 = 0;
-                
+
                 if (gsm2 > 0)
                 {
                     // When 2 GSMs are entered:

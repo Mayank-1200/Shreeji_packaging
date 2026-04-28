@@ -46,7 +46,8 @@ namespace shreeji_packaging.Forms
         private void ClearCalculatedFields()
         {
             txtSheetSize.Text = "";
-            txtSheetSizeFull.Text = "";
+            if (!chkUseSheetSize.Checked)
+                txtSheetSizeFull.Text = "";
             txtGramage.Text = "";
             txtPaper.Text = "";
             txtLiner.Text = "";
@@ -494,7 +495,7 @@ namespace shreeji_packaging.Forms
                         return;
                     }
 
-                    var parts = txtSheetSizeFull.Text.Split('x');
+                    var parts = txtSheetSizeFull.Text.Split(new[] { 'x', 'X' });
                     if (parts.Length != 2)
                     {
                         ClearCalculatedFields();
@@ -508,11 +509,7 @@ namespace shreeji_packaging.Forms
                         return;
                     }
 
-                    // For display purposes, calculate approximate box dimensions (optional, for half sheet calculation)
-                    // We can't reverse calculate L, B, H from fullLength and fullBreadth uniquely
-                    // So we'll leave txtSheetSize empty or show the full sheet only
                     txtSheetSize.Text = ""; // Leave empty when using direct sheet size
-                    txtSheetSizeFull.Text = $"{fullLength} x {fullBreadth}";
                 }
                 else
                 {

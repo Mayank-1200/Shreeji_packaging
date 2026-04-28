@@ -13,6 +13,7 @@ namespace shreeji_packaging.Forms
         private DataGridView dataGridView1;
         private TextBox txtGeneralPaper, txtGeneralLiner;
         private Button btnSave;
+        private Label lblGrandTotal;
 
         public InventoryForm()
         {
@@ -23,7 +24,7 @@ namespace shreeji_packaging.Forms
 
             InitializeComponents();
             LoadInventoryData();
-            
+
             // Reload inventory when form is activated (switched back to)
             this.Activated += (s, e) => LoadInventoryData();
         }
@@ -86,14 +87,14 @@ namespace shreeji_packaging.Forms
                 Font = new Font("Segoe UI", 12, FontStyle.Bold),
                 ForeColor = Color.FromArgb(52, 73, 94),
                 AutoSize = true,
-                Location = new Point(30, 560)
+                Location = new Point(30, 30)
             };
             contentPanel.Controls.Add(lblTableHeader);
 
             dataGridView1 = new DataGridView()
             {
-                Location = new Point(30, 85),
-                Size = new Size(1200, 450),
+                Location = new Point(30, 65),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 AutoGenerateColumns = false,
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
@@ -102,7 +103,10 @@ namespace shreeji_packaging.Forms
                 GridColor = Color.FromArgb(223, 230, 233),
                 BorderStyle = BorderStyle.None,
                 Font = new Font("Segoe UI", 10),
-                ColumnHeadersHeight = 45
+                ColumnHeadersHeight = 45,
+                ScrollBars = ScrollBars.Both,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None,
+                RowHeadersVisible = false
             };
 
             // Add Row Number column
@@ -129,7 +133,7 @@ namespace shreeji_packaging.Forms
                 dataGridView1.Columns.Add(col);
             }
 
-            // Populate rows
+            // Populate data rows (26-52)
             for (int row = 26; row <= 52; row++)
             {
                 int rowIndex = dataGridView1.Rows.Add();
@@ -138,17 +142,52 @@ namespace shreeji_packaging.Forms
                 dataGridView1.Rows[rowIndex].Cells["Row"].Style.BackColor = Color.FromArgb(236, 240, 241);
             }
 
+            // Add Totals row (for column totals)
+            int totalsRowIndex = dataGridView1.Rows.Add();
+            dataGridView1.Rows[totalsRowIndex].Cells["Row"].Value = "Total";
+            dataGridView1.Rows[totalsRowIndex].Cells["Row"].ReadOnly = true;
+            dataGridView1.Rows[totalsRowIndex].Cells["Row"].Style.BackColor = Color.FromArgb(241, 196, 15);
+            dataGridView1.Rows[totalsRowIndex].Cells["Row"].Style.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            dataGridView1.Rows[totalsRowIndex].Cells["Row"].Style.ForeColor = Color.White;
+            foreach (int gsm in gsmValues)
+            {
+                dataGridView1.Rows[totalsRowIndex].Cells[$"GSM_{gsm}"].ReadOnly = true;
+                dataGridView1.Rows[totalsRowIndex].Cells[$"GSM_{gsm}"].Style.BackColor = Color.FromArgb(241, 196, 15);
+                dataGridView1.Rows[totalsRowIndex].Cells[$"GSM_{gsm}"].Style.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+                dataGridView1.Rows[totalsRowIndex].Cells[$"GSM_{gsm}"].Style.ForeColor = Color.White;
+            }
+
             dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(52, 152, 219);
             dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11, FontStyle.Bold);
             dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            // Handle cell value changes to recalculate totals
+            dataGridView1.CellValueChanged += DataGridView1_CellValueChanged;
+            dataGridView1.CellEndEdit += DataGridView1_CellValueChanged;
+
             contentPanel.Controls.Add(dataGridView1);
 
-            // General Stock Section
+            // Grand Total Label - Positioned below the DataGridView
+            lblGrandTotal = new Label()
+            {
+                Text = "Grand Total: 0",
+                Font = new Font("Segoe UI", 14, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(231, 76, 60),
+                AutoSize = false,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Size = new Size(250, 45),
+                Location = new Point(30, 0), // Will be adjusted in resize handler
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Left
+            };
+            contentPanel.Controls.Add(lblGrandTotal);
+
+            // General Stock Section - Positioned at top right
             Panel generalPanel = new Panel()
             {
-                Location = new Point(1250, 105),
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                Location = new Point(0, 30), // Will be adjusted after adding to panel
                 Size = new Size(300, 150),
                 BackColor = Color.White,
                 BorderStyle = BorderStyle.FixedSingle,
@@ -199,11 +238,15 @@ namespace shreeji_packaging.Forms
 
             contentPanel.Controls.Add(generalPanel);
 
-            // Save Button
+            // Adjust general panel position after adding to contentPanel
+            generalPanel.Location = new Point(contentPanel.Width - generalPanel.Width - 30, 30);
+
+            // Save Button - Positioned below General Stock panel
             btnSave = new Button()
             {
                 Text = "💾 Save Inventory",
-                Location = new Point(1250, 280),
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                Location = new Point(0, 200), // Will be adjusted after adding to panel
                 Size = new Size(300, 50),
                 BackColor = Color.FromArgb(46, 204, 113),
                 ForeColor = Color.White,
@@ -216,6 +259,25 @@ namespace shreeji_packaging.Forms
             btnSave.Click += BtnSave_Click;
             contentPanel.Controls.Add(btnSave);
 
+            // Adjust save button position after adding to contentPanel
+            btnSave.Location = new Point(contentPanel.Width - btnSave.Width - 30, 200);
+
+            // Handle resize to keep panels positioned correctly and adjust DataGridView size
+            contentPanel.Resize += (s, e) =>
+            {
+                generalPanel.Location = new Point(contentPanel.Width - generalPanel.Width - 30, 30);
+                btnSave.Location = new Point(contentPanel.Width - btnSave.Width - 30, 200);
+
+                // Adjust DataGridView to fill available space
+                // Leave room for: right panel (300px) + margins (30 left + 30 right + 20 gap) = 380px reserved on right
+                int tableWidth = contentPanel.Width - 30 - 350; // 30=left margin, 350=space for right panel
+                int tableHeight = contentPanel.Height - 65 - 60 - 30; // 65=top offset, 60=space for label, 30=bottom margin
+                dataGridView1.Size = new Size(tableWidth, tableHeight);
+
+                // Position grand total label below the DataGridView
+                lblGrandTotal.Location = new Point(30, dataGridView1.Bottom + 10);
+            };
+
             this.Controls.Add(contentPanel);
         }
 
@@ -223,10 +285,12 @@ namespace shreeji_packaging.Forms
         {
             // Reload inventory from storage to get latest values
             _inventory = StorageService.LoadInventory();
-            
-            // Load table data
+
+            // Load table data (only data rows, not totals rows)
             int[] gsmValues = { 80, 90, 100, 120, 150, 180, 200, 230, 250, 300 };
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            int dataRowCount = 52 - 26 + 1; // Rows 26 to 52
+
+            for (int i = 0; i < dataRowCount; i++)
             {
                 int row = 26 + i;
                 foreach (int gsm in gsmValues)
@@ -236,18 +300,63 @@ namespace shreeji_packaging.Forms
                 }
             }
 
+            // Calculate and update totals
+            UpdateTotals();
+
             // Load general stock
             txtGeneralPaper.Text = _inventory.GeneralPaperStock.ToString("0.##");
             txtGeneralLiner.Text = _inventory.GeneralLinerStock.ToString("0.##");
+        }
+
+        private void UpdateTotals()
+        {
+            int[] gsmValues = { 80, 90, 100, 120, 150, 180, 200, 230, 250, 300 };
+            int dataRowCount = 52 - 26 + 1; // Rows 26 to 52
+            int totalsRowIndex = dataRowCount; // Index of totals row
+
+            double grandTotalSum = 0;
+
+            // Calculate column totals
+            foreach (int gsm in gsmValues)
+            {
+                double columnTotal = 0;
+                for (int i = 0; i < dataRowCount; i++)
+                {
+                    string cellValue = dataGridView1.Rows[i].Cells[$"GSM_{gsm}"].Value?.ToString() ?? "0";
+                    if (double.TryParse(cellValue, out double value))
+                    {
+                        columnTotal += value;
+                    }
+                }
+                dataGridView1.Rows[totalsRowIndex].Cells[$"GSM_{gsm}"].Value = columnTotal.ToString("0.##");
+                grandTotalSum += columnTotal;
+            }
+
+            // Update grand total label
+            lblGrandTotal.Text = $"Grand Total: {grandTotalSum:0.##}";
+        }
+
+        private void DataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            // Only recalculate if a data cell was changed (not totals rows or Row column)
+            if (e == null) return;
+
+            int dataRowCount = 52 - 26 + 1;
+            if (e.RowIndex >= 0 && e.RowIndex < dataRowCount && e.ColumnIndex > 0)
+            {
+                UpdateTotals();
+            }
         }
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
             try
             {
-                // Save table data
+                // Save table data (only data rows, not totals rows)
                 int[] gsmValues = { 80, 90, 100, 120, 150, 180, 200, 230, 250, 300 };
-                for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                int dataRowCount = 52 - 26 + 1; // Rows 26 to 52
+
+                for (int i = 0; i < dataRowCount; i++)
                 {
                     int row = 26 + i;
                     foreach (int gsm in gsmValues)
