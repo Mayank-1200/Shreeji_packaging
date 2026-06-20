@@ -5,7 +5,8 @@ namespace shreeji_packaging.Models
     public class BoxRecord
     {
         public string BoxName { get; set; }
-        public string BoxSize { get; set; } // Format: L x B x H
+        public string BoxSize { get; set; } // Format: L x B x H (or "Sheet Size: ..." for direct-sheet mode)
+        public string BoxDimensions { get; set; } // Format: L x B x H — always stored, even in direct-sheet mode
         public string SheetSize { get; set; } // Calculated (Half)
         public string SheetSizeFull { get; set; } // Calculated (Full)
 

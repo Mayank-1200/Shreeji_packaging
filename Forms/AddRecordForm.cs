@@ -113,7 +113,7 @@ namespace shreeji_packaging.Forms
                 Left = 30,
                 Top = 85,
                 Width = 700,
-                Height = 260,
+                Height = 320,
                 BackColor = Color.White,
                 BorderStyle = BorderStyle.FixedSingle
             };
@@ -166,7 +166,7 @@ namespace shreeji_packaging.Forms
             {
                 Text = "Calculated Results",
                 Left = 30,
-                Top = 360,
+                Top = 420,
                 Width = 200,
                 Height = 25,
                 Font = sectionFont,
@@ -178,27 +178,27 @@ namespace shreeji_packaging.Forms
             Panel resultPanel = new Panel()
             {
                 Left = 30,
-                Top = 400,
+                Top = 460,
                 Width = 720,
-                Height = 480,
+                Height = 400,
                 BackColor = Color.White,
                 BorderStyle = BorderStyle.FixedSingle,
                 AutoScroll = true
             };
 
-            // Row 1 - Sheet Size Half
-            Label lblSheetSize = new Label() { Text = "Sheet Size (Half):", Left = 20, Top = 25, Width = 150, Height = 20, Font = labelFont };
-            txtSheetSize = new TextBox() { Left = 180, Top = 22, Width = 480, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            // Row 5 - Sheet Size Half (in Box Details)
+            Label lblSheetSize = new Label() { Text = "Sheet Size (Half):", Left = 20, Top = 240, Width = 150, Height = 20, Font = labelFont };
+            txtSheetSize = new TextBox() { Left = 180, Top = 237, Width = 290, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
-            // Row 1b - Sheet Size Full
-            Label lblSheetSizeFull = new Label() { Text = "Sheet Size (Full):", Left = 20, Top = 60, Width = 150, Height = 20, Font = labelFont };
-            txtSheetSizeFull = new TextBox() { Left = 180, Top = 57, Width = 480, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            // Row 6 - Sheet Size Full + Use Sheet Size Directly checkbox (in Box Details)
+            Label lblSheetSizeFull = new Label() { Text = "Sheet Size (Full):", Left = 20, Top = 275, Width = 150, Height = 20, Font = labelFont };
+            txtSheetSizeFull = new TextBox() { Left = 180, Top = 272, Width = 290, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
             chkUseSheetSize = new CheckBox()
             {
                 Text = "Use Sheet Size Directly",
-                Left = 20,
-                Top = 95,
+                Left = 480,
+                Top = 275,
                 Width = 200,
                 Height = 20,
                 Font = new Font("Segoe UI", 9, FontStyle.Regular)
@@ -208,93 +208,96 @@ namespace shreeji_packaging.Forms
             chkHalfSheet = new CheckBox()
             {
                 Text = "Calculate usage on half sheet",
-                Left = 240,
-                Top = 95,
+                Left = 480,
+                Top = 240,
                 Width = 240,
                 Height = 20,
                 Font = new Font("Segoe UI", 9, FontStyle.Regular)
             };
 
-            // Row 2 - Calculations
-            Label lblGramage = new Label() { Text = "Gramage:", Left = 20, Top = 125, Width = 80, Height = 20, Font = labelFont };
-            txtGramage = new TextBox() { Left = 110, Top = 122, Width = 100, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            // Row 1 - Calculations
+            Label lblGramage = new Label() { Text = "Gramage:", Left = 20, Top = 25, Width = 80, Height = 20, Font = labelFont };
+            txtGramage = new TextBox() { Left = 110, Top = 22, Width = 100, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
-            Label lblPaper = new Label() { Text = "Paper (total):", Left = 230, Top = 125, Width = 110, Height = 20, Font = labelFont };
-            txtPaper = new TextBox() { Left = 350, Top = 122, Width = 110, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            Label lblPaper = new Label() { Text = "Paper (total):", Left = 230, Top = 25, Width = 110, Height = 20, Font = labelFont };
+            txtPaper = new TextBox() { Left = 350, Top = 22, Width = 110, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
-            Label lblLiner = new Label() { Text = "Liner (total):", Left = 480, Top = 125, Width = 110, Height = 20, Font = labelFont };
-            txtLiner = new TextBox() { Left = 600, Top = 122, Width = 90, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            Label lblLiner = new Label() { Text = "Liner (total):", Left = 480, Top = 25, Width = 110, Height = 20, Font = labelFont };
+            txtLiner = new TextBox() { Left = 600, Top = 22, Width = 90, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
             // Row - Pricing Inputs
-            Label lblSellRate = new Label() { Text = "Sell Rate:", Left = 20, Top = 160, Width = 90, Height = 20, Font = labelFont };
-            txtSellRate = new TextBox() { Left = 110, Top = 157, Width = 110, Height = 25, Font = inputFont };
+            Label lblSellRate = new Label() { Text = "Sell Rate:", Left = 20, Top = 60, Width = 90, Height = 20, Font = labelFont };
+            txtSellRate = new TextBox() { Left = 110, Top = 57, Width = 110, Height = 25, Font = inputFont };
 
-            Label lblNumBoxes = new Label() { Text = "Box Quantity:", Left = 230, Top = 160, Width = 120, Height = 20, Font = labelFont };
-            txtNumBoxes = new TextBox() { Left = 360, Top = 157, Width = 90, Height = 25, Font = inputFont };
+            Label lblNumBoxes = new Label() { Text = "Box Quantity:", Left = 230, Top = 60, Width = 120, Height = 20, Font = labelFont };
+            txtNumBoxes = new TextBox() { Left = 360, Top = 57, Width = 90, Height = 25, Font = inputFont };
 
             // Lamination row
-            Label lblLamination = new Label() { Text = "Lamination rate:", Left = 20, Top = 195, Width = 130, Height = 20, Font = labelFont };
-            txtLamination = new TextBox() { Left = 160, Top = 192, Width = 90, Height = 25, Font = inputFont };
+            Label lblLamination = new Label() { Text = "Lamination rate:", Left = 20, Top = 95, Width = 130, Height = 20, Font = labelFont };
+            txtLamination = new TextBox() { Left = 160, Top = 92, Width = 90, Height = 25, Font = inputFont };
 
-            Label lblLaminationCalculated = new Label() { Text = "Lamination/box:", Left = 270, Top = 195, Width = 130, Height = 20, Font = labelFont };
-            txtLaminationCalculated = new TextBox() { Left = 410, Top = 192, Width = 100, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            Label lblLaminationCalculated = new Label() { Text = "Lamination/box:", Left = 270, Top = 95, Width = 130, Height = 20, Font = labelFont };
+            txtLaminationCalculated = new TextBox() { Left = 410, Top = 92, Width = 100, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
             // Lamination Total on separate row
-            Label lblLaminationTotal = new Label() { Text = "Lamination Total:", Left = 20, Top = 230, Width = 130, Height = 20, Font = labelFont };
-            txtLaminationTotal = new TextBox() { Left = 160, Top = 227, Width = 140, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            Label lblLaminationTotal = new Label() { Text = "Lamination Total:", Left = 20, Top = 130, Width = 130, Height = 20, Font = labelFont };
+            txtLaminationTotal = new TextBox() { Left = 160, Top = 127, Width = 140, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
             // Extras row
-            Label lblPrinting = new Label() { Text = "Printing/box:", Left = 20, Top = 270, Width = 110, Height = 20, Font = labelFont };
-            txtPrinting = new TextBox() { Left = 130, Top = 267, Width = 90, Height = 25, Font = inputFont };
+            Label lblPrinting = new Label() { Text = "Printing/box:", Left = 20, Top = 170, Width = 110, Height = 20, Font = labelFont };
+            txtPrinting = new TextBox() { Left = 130, Top = 167, Width = 90, Height = 25, Font = inputFont };
 
-            Label lblPunching = new Label() { Text = "Punching/box:", Left = 230, Top = 270, Width = 120, Height = 20, Font = labelFont };
-            txtPunching = new TextBox() { Left = 350, Top = 267, Width = 90, Height = 25, Font = inputFont };
+            Label lblPunching = new Label() { Text = "Punching/box:", Left = 230, Top = 170, Width = 120, Height = 20, Font = labelFont };
+            txtPunching = new TextBox() { Left = 350, Top = 167, Width = 90, Height = 25, Font = inputFont };
 
-            Label lblPasting = new Label() { Text = "Pasting/box:", Left = 450, Top = 270, Width = 110, Height = 20, Font = labelFont };
-            txtPasting = new TextBox() { Left = 560, Top = 267, Width = 90, Height = 25, Font = inputFont };
+            Label lblPasting = new Label() { Text = "Pasting/box:", Left = 450, Top = 170, Width = 110, Height = 20, Font = labelFont };
+            txtPasting = new TextBox() { Left = 560, Top = 167, Width = 90, Height = 25, Font = inputFont };
 
-            Label lblSidePasting = new Label() { Text = "Side-pasting/box:", Left = 20, Top = 310, Width = 140, Height = 20, Font = labelFont };
-            txtSidePasting = new TextBox() { Left = 170, Top = 307, Width = 90, Height = 25, Font = inputFont };
+            Label lblSidePasting = new Label() { Text = "Side-pasting/box:", Left = 20, Top = 210, Width = 140, Height = 20, Font = labelFont };
+            txtSidePasting = new TextBox() { Left = 170, Top = 207, Width = 90, Height = 25, Font = inputFont };
 
             // Pricing outputs
-            Label lblPerBoxRate = new Label() { Text = "Rate / Box:", Left = 280, Top = 310, Width = 100, Height = 20, Font = labelFont };
-            txtPerBoxRate = new TextBox() { Left = 380, Top = 307, Width = 110, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            Label lblPerBoxRate = new Label() { Text = "Rate / Box:", Left = 280, Top = 210, Width = 100, Height = 20, Font = labelFont };
+            txtPerBoxRate = new TextBox() { Left = 380, Top = 207, Width = 110, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
-            Label lblGrandTotal = new Label() { Text = "Grand Total:", Left = 500, Top = 310, Width = 110, Height = 20, Font = labelFont };
-            txtGrandTotal = new TextBox() { Left = 610, Top = 307, Width = 90, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            Label lblGrandTotal = new Label() { Text = "Grand Total:", Left = 500, Top = 210, Width = 110, Height = 20, Font = labelFont };
+            txtGrandTotal = new TextBox() { Left = 610, Top = 207, Width = 90, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
             // Weight outputs
-            Label lblPaperWeightPerBox = new Label() { Text = "Paper weight/box (kg):", Left = 20, Top = 350, Width = 180, Height = 20, Font = labelFont };
-            txtPaperWeightPerBox = new TextBox() { Left = 210, Top = 347, Width = 100, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            Label lblPaperWeightPerBox = new Label() { Text = "Paper weight/box (kg):", Left = 20, Top = 250, Width = 180, Height = 20, Font = labelFont };
+            txtPaperWeightPerBox = new TextBox() { Left = 210, Top = 247, Width = 100, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
-            Label lblPaperWeightTotal = new Label() { Text = "Paper weight total (kg):", Left = 330, Top = 350, Width = 190, Height = 20, Font = labelFont };
-            txtPaperWeightTotal = new TextBox() { Left = 530, Top = 347, Width = 110, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            Label lblPaperWeightTotal = new Label() { Text = "Paper weight total (kg):", Left = 330, Top = 250, Width = 190, Height = 20, Font = labelFont };
+            txtPaperWeightTotal = new TextBox() { Left = 530, Top = 247, Width = 110, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
-            Label lblLinerWeightPerBox = new Label() { Text = "Liner weight/box (kg):", Left = 20, Top = 390, Width = 180, Height = 20, Font = labelFont };
-            txtLinerWeightPerBox = new TextBox() { Left = 210, Top = 387, Width = 100, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            Label lblLinerWeightPerBox = new Label() { Text = "Liner weight/box (kg):", Left = 20, Top = 290, Width = 180, Height = 20, Font = labelFont };
+            txtLinerWeightPerBox = new TextBox() { Left = 210, Top = 287, Width = 100, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
-            Label lblLinerWeightTotal = new Label() { Text = "Liner weight total (kg):", Left = 330, Top = 390, Width = 190, Height = 20, Font = labelFont };
-            txtLinerWeightTotal = new TextBox() { Left = 530, Top = 387, Width = 110, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            Label lblLinerWeightTotal = new Label() { Text = "Liner weight total (kg):", Left = 330, Top = 290, Width = 190, Height = 20, Font = labelFont };
+            txtLinerWeightTotal = new TextBox() { Left = 530, Top = 287, Width = 110, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
             // Detailed liner weights per GSM
-            Label lblLiner1WeightPerBox = new Label() { Text = "Liner 1 wt/box (kg):", Left = 20, Top = 425, Width = 180, Height = 20, Font = labelFont };
-            txtLiner1WeightPerBox = new TextBox() { Left = 210, Top = 422, Width = 100, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            Label lblLiner1WeightPerBox = new Label() { Text = "Liner 1 wt/box (kg):", Left = 20, Top = 325, Width = 180, Height = 20, Font = labelFont };
+            txtLiner1WeightPerBox = new TextBox() { Left = 210, Top = 322, Width = 100, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
-            Label lblLiner1WeightTotal = new Label() { Text = "Liner 1 total (kg):", Left = 330, Top = 425, Width = 190, Height = 20, Font = labelFont };
-            txtLiner1WeightTotal = new TextBox() { Left = 530, Top = 422, Width = 110, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            Label lblLiner1WeightTotal = new Label() { Text = "Liner 1 total (kg):", Left = 330, Top = 325, Width = 190, Height = 20, Font = labelFont };
+            txtLiner1WeightTotal = new TextBox() { Left = 530, Top = 322, Width = 110, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
-            Label lblLiner2WeightPerBox = new Label() { Text = "Liner 2 wt/box (kg):", Left = 20, Top = 460, Width = 180, Height = 20, Font = labelFont };
-            txtLiner2WeightPerBox = new TextBox() { Left = 210, Top = 457, Width = 100, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            Label lblLiner2WeightPerBox = new Label() { Text = "Liner 2 wt/box (kg):", Left = 20, Top = 360, Width = 180, Height = 20, Font = labelFont };
+            txtLiner2WeightPerBox = new TextBox() { Left = 210, Top = 357, Width = 100, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
-            Label lblLiner2WeightTotal = new Label() { Text = "Liner 2 total (kg):", Left = 330, Top = 460, Width = 190, Height = 20, Font = labelFont };
-            txtLiner2WeightTotal = new TextBox() { Left = 530, Top = 457, Width = 110, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
+            Label lblLiner2WeightTotal = new Label() { Text = "Liner 2 total (kg):", Left = 330, Top = 360, Width = 190, Height = 20, Font = labelFont };
+            txtLiner2WeightTotal = new TextBox() { Left = 530, Top = 357, Width = 110, Height = 25, Font = inputFont, ReadOnly = true, BackColor = Color.FromArgb(236, 240, 241) };
 
 
-            resultPanel.Controls.AddRange(new Control[] {
+            inputPanel.Controls.AddRange(new Control[] {
                 lblSheetSize, txtSheetSize,
                 lblSheetSizeFull, txtSheetSizeFull,
                 chkUseSheetSize,
-                chkHalfSheet,
+                chkHalfSheet
+            });
+
+            resultPanel.Controls.AddRange(new Control[] {
                 lblGramage, txtGramage,
                 lblPaper, txtPaper,
                 lblLiner, txtLiner,
@@ -325,7 +328,7 @@ namespace shreeji_packaging.Forms
             {
                 Text = "Save Record",
                 Left = 330,
-                Top = 900,
+                Top = 880,
                 Width = 120,
                 Height = 40,
                 BackColor = Color.FromArgb(46, 204, 113),
@@ -429,6 +432,18 @@ namespace shreeji_packaging.Forms
                     if (record.BoxSize.StartsWith(prefix))
                     {
                         txtSheetSizeFull.Text = record.BoxSize.Substring(prefix.Length).Trim();
+                    }
+                }
+
+                // Restore L/B/H values stored alongside the sheet size, if present
+                if (!string.IsNullOrEmpty(record.BoxDimensions))
+                {
+                    var dimParts = record.BoxDimensions.Split('x');
+                    if (dimParts.Length == 3)
+                    {
+                        txtLength.Text = dimParts[0].Trim();
+                        txtBreadth.Text = dimParts[1].Trim();
+                        txtHeight.Text = dimParts[2].Trim();
                     }
                 }
             }
@@ -825,6 +840,11 @@ namespace shreeji_packaging.Forms
                 }
 
                 boxSizeStr = $"Sheet Size: {fullLength} x {fullBreadth}";
+
+                // Capture L/B/H if user filled them — they may exist even in direct-sheet mode
+                double.TryParse(txtLength.Text, out l);
+                double.TryParse(txtBreadth.Text, out b);
+                double.TryParse(txtHeight.Text, out h);
             }
             else
             {
@@ -842,6 +862,8 @@ namespace shreeji_packaging.Forms
                 fullBreadth = (l + b) * 2 + 1.5;
                 boxSizeStr = $"{l} x {b} x {h}";
             }
+
+            string boxDimensionsStr = (l > 0 || b > 0 || h > 0) ? $"{l} x {b} x {h}" : "";
 
             double.TryParse(txtPaperWeightTotal.Text, out double paperWeightTotal);
 
@@ -909,6 +931,7 @@ namespace shreeji_packaging.Forms
                 // Update existing record instead of creating a new one
                 _editingRecord.BoxName = txtBoxName.Text;
                 _editingRecord.BoxSize = boxSizeStr;
+                _editingRecord.BoxDimensions = boxDimensionsStr;
                 _editingRecord.SheetSize = txtSheetSize.Text;
                 _editingRecord.SheetSizeFull = txtSheetSizeFull.Text;
                 _editingRecord.GSM = gsmValue;
@@ -964,6 +987,7 @@ namespace shreeji_packaging.Forms
                 {
                     BoxName = txtBoxName.Text,
                     BoxSize = boxSizeStr,
+                    BoxDimensions = boxDimensionsStr,
                     SheetSize = txtSheetSize.Text,
                     SheetSizeFull = txtSheetSizeFull.Text,
                     GSM = gsmValue,

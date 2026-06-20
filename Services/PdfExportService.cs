@@ -118,52 +118,16 @@ namespace shreeji_packaging.Services
             yPosition += headerHeight;
 
             // Draw table rows
+            double lineHeight = cellFont.GetHeight();
             int rowIndex = 0;
             foreach (var (customerName, record) in records)
             {
-                // Check if we need a new page
-                if (yPosition + rowHeight > page.Height - margin)
-                {
-                    page = document.AddPage();
-                    page.Width = 842;  // A4 landscape width
-                    page.Height = 595; // A4 landscape height
-                    gfx = XGraphics.FromPdfPage(page);
-                    yPosition = margin;
-
-                    // Redraw header on new page
-                    xPosition = margin;
-                    gfx.DrawRectangle(new XSolidBrush(headerBackColor), 
-                        new XRect(xPosition, yPosition, availableWidth, headerHeight));
-
-                    foreach (var column in columns)
-                    {
-                        XRect headerRect = new XRect(xPosition, yPosition, column.Width, headerHeight);
-                        gfx.DrawRectangle(new XPen(borderColor, 0.5), headerRect);
-                        
-                        XRect textRect = new XRect(xPosition + 3, yPosition + 3, column.Width - 6, headerHeight - 6);
-                        XStringFormat headerFormat2 = XStringFormats.TopLeft;
-                        headerFormat2.Alignment = XStringAlignment.Near;
-                        headerFormat2.LineAlignment = XLineAlignment.Near;
-                        gfx.DrawString(column.Header, headerFont, new XSolidBrush(headerTextColor), 
-                            textRect, headerFormat2);
-                        
-                        xPosition += column.Width;
-                    }
-
-                    yPosition += headerHeight;
-                }
-
-                // Alternate row colors
-                XColor currentRowColor = (rowIndex % 2 == 0) ? rowBackColor : altRowBackColor;
-                xPosition = margin;
-
                 // Get sheet size based on UseHalfSheetForUsage
                 string sheetSize = record.UseHalfSheetForUsage ? record.SheetSize : record.SheetSizeFull;
                 if (string.IsNullOrEmpty(sheetSize))
                     sheetSize = "-";
 
                 // Calculate individual liner weights for each GSM
-                // Parse sheet size to get dimensions
                 double fullLength = 0, fullBreadth = 0;
                 if (!string.IsNullOrEmpty(record.SheetSizeFull))
                 {
@@ -175,40 +139,31 @@ namespace shreeji_packaging.Services
                     }
                 }
 
-                // Calculate base liner count per box (without half sheet multiplier)
                 double baseLinerCountPerBox = (record.Ply - 1) / 2.0;
-                
-                // Calculate liner weights per GSM
+
                 double linerWeightPerBox1 = 0;
                 double linerWeightPerBox2 = 0;
                 if (fullLength > 0 && fullBreadth > 0)
                 {
                     if (record.GSM2 > 0)
                     {
-                        // When 2 GSMs are entered:
-                        // Liner 1: Sheet size × (GSM1 + 40) / 1550 / 1000 (40 is fixed value)
                         linerWeightPerBox1 = (fullLength * fullBreadth * (record.GSM + 40)) / 1550.0 / 1000.0;
-                        // Liner 2: Sheet size × GSM2 / 1550 / 1000
                         linerWeightPerBox2 = (fullLength * fullBreadth * record.GSM2) / 1550.0 / 1000.0;
                     }
                     else
                     {
-                        // Single GSM: calculate GSM + GSM*40/100, then add GSM again
-                        // Example: 120 + 120*40/100 = 168, then 168 + 120 = 288
-                        double linerGsmValue = record.GSM + record.GSM * 0.4 + record.GSM; // GSM*2.4
+                        double linerGsmValue = record.GSM + record.GSM * 0.4 + record.GSM;
                         linerWeightPerBox1 = (fullLength * fullBreadth * linerGsmValue) / 1550.0 / 1000.0;
                     }
                 }
-                
-                // Total weights = weight per liner * base liner count * number of boxes
+
                 double linerWeightTotal1 = linerWeightPerBox1 * baseLinerCountPerBox * record.NumberOfBoxes;
                 double linerWeightTotal2 = linerWeightPerBox2 * baseLinerCountPerBox * record.NumberOfBoxes;
 
-                // Prepare cell values
                 string[] cellValues = new string[]
                 {
                     customerName,
-                    record.BoxSize ?? "-",
+                    !string.IsNullOrEmpty(record.BoxDimensions) ? record.BoxDimensions : (record.BoxSize ?? "-"),
                     sheetSize,
                     record.GSM.ToString("0"),
                     record.LinerUsage.ToString("0.##"),
@@ -221,39 +176,73 @@ namespace shreeji_packaging.Services
                     linerWeightTotal2 > 0 ? linerWeightTotal2.ToString("0.###") : "-"
                 };
 
-                // Draw row background
-                gfx.DrawRectangle(new XSolidBrush(currentRowColor), 
-                    new XRect(xPosition, yPosition, availableWidth, rowHeight));
+                // Wrap each cell to its column width and compute actual row height
+                var wrappedCells = new List<List<string>>();
+                int maxLines = 1;
+                for (int i = 0; i < cellValues.Length; i++)
+                {
+                    var wrappedLines = WrapText(cellValues[i], columns[i].Width - 6, cellFont, gfx);
+                    wrappedCells.Add(wrappedLines);
+                    if (wrappedLines.Count > maxLines) maxLines = wrappedLines.Count;
+                }
+                double actualRowHeight = Math.Max(rowHeight, maxLines * lineHeight + 6);
 
-                // Draw cells
+                // Page break check using the actual (possibly taller) row height
+                if (yPosition + actualRowHeight > page.Height - margin)
+                {
+                    page = document.AddPage();
+                    page.Width = 842;
+                    page.Height = 595;
+                    gfx = XGraphics.FromPdfPage(page);
+                    yPosition = margin;
+
+                    // Redraw header on new page
+                    double xpHeader = margin;
+                    gfx.DrawRectangle(new XSolidBrush(headerBackColor),
+                        new XRect(xpHeader, yPosition, availableWidth, headerHeight));
+                    foreach (var column in columns)
+                    {
+                        XRect headerRect = new XRect(xpHeader, yPosition, column.Width, headerHeight);
+                        gfx.DrawRectangle(new XPen(borderColor, 0.5), headerRect);
+
+                        XRect textRect = new XRect(xpHeader + 3, yPosition + 3, column.Width - 6, headerHeight - 6);
+                        XStringFormat headerFormat2 = XStringFormats.TopLeft;
+                        headerFormat2.Alignment = XStringAlignment.Near;
+                        headerFormat2.LineAlignment = XLineAlignment.Near;
+                        gfx.DrawString(column.Header, headerFont, new XSolidBrush(headerTextColor),
+                            textRect, headerFormat2);
+
+                        xpHeader += column.Width;
+                    }
+                    yPosition += headerHeight;
+                }
+
+                // Draw row
+                XColor currentRowColor = (rowIndex % 2 == 0) ? rowBackColor : altRowBackColor;
+                xPosition = margin;
+                gfx.DrawRectangle(new XSolidBrush(currentRowColor),
+                    new XRect(xPosition, yPosition, availableWidth, actualRowHeight));
+
                 for (int i = 0; i < columns.Count && i < cellValues.Length; i++)
                 {
-                    XRect cellRect = new XRect(xPosition, yPosition, columns[i].Width, rowHeight);
-                    
-                    // Draw border
+                    XRect cellRect = new XRect(xPosition, yPosition, columns[i].Width, actualRowHeight);
                     gfx.DrawRectangle(new XPen(borderColor, 0.5), cellRect);
-                    
-                    // Draw cell text - ensure it fits within cell bounds
-                    XRect textRect = new XRect(xPosition + 3, yPosition + 3, columns[i].Width - 6, rowHeight - 6);
-                    XStringFormat cellFormat = XStringFormats.TopLeft;
-                    cellFormat.Alignment = XStringAlignment.Near;
-                    cellFormat.LineAlignment = XLineAlignment.Near;
-                    
-                    // Use MeasureString to check if text fits, if not, truncate or wrap
-                    XSize textSize = gfx.MeasureString(cellValues[i], cellFont);
-                    if (textSize.Width > textRect.Width)
+
+                    double textY = yPosition + 3;
+                    foreach (var line in wrappedCells[i])
                     {
-                        // Text is too wide - try to fit it or show truncated version
-                        // For now, we'll just draw it and let it clip (better than losing data)
-                        // In a production system, you might want to implement smart truncation
+                        XRect textRect = new XRect(xPosition + 3, textY, columns[i].Width - 6, lineHeight);
+                        XStringFormat cellFormat = XStringFormats.TopLeft;
+                        cellFormat.Alignment = XStringAlignment.Near;
+                        cellFormat.LineAlignment = XLineAlignment.Near;
+                        gfx.DrawString(line, cellFont, XBrushes.Black, textRect, cellFormat);
+                        textY += lineHeight;
                     }
-                    
-                    gfx.DrawString(cellValues[i], cellFont, XBrushes.Black, textRect, cellFormat);
-                    
+
                     xPosition += columns[i].Width;
                 }
 
-                yPosition += rowHeight;
+                yPosition += actualRowHeight;
                 rowIndex++;
             }
 
@@ -261,6 +250,63 @@ namespace shreeji_packaging.Services
             document.Save(filePath);
             document.Dispose();
             gfx.Dispose();
+        }
+
+        private static List<string> WrapText(string text, double maxWidth, XFont font, XGraphics gfx)
+        {
+            var lines = new List<string>();
+            if (string.IsNullOrEmpty(text))
+            {
+                lines.Add("");
+                return lines;
+            }
+
+            var words = text.Split(' ');
+            string currentLine = "";
+
+            foreach (var word in words)
+            {
+                string candidate = string.IsNullOrEmpty(currentLine) ? word : currentLine + " " + word;
+                if (gfx.MeasureString(candidate, font).Width <= maxWidth)
+                {
+                    currentLine = candidate;
+                    continue;
+                }
+
+                if (!string.IsNullOrEmpty(currentLine))
+                {
+                    lines.Add(currentLine);
+                    currentLine = "";
+                }
+
+                // The single word is wider than the cell — break it by characters
+                if (gfx.MeasureString(word, font).Width > maxWidth)
+                {
+                    string chunk = "";
+                    foreach (var c in word)
+                    {
+                        string testChunk = chunk + c;
+                        if (gfx.MeasureString(testChunk, font).Width <= maxWidth)
+                        {
+                            chunk = testChunk;
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(chunk)) lines.Add(chunk);
+                            chunk = c.ToString();
+                        }
+                    }
+                    currentLine = chunk;
+                }
+                else
+                {
+                    currentLine = word;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(currentLine)) lines.Add(currentLine);
+            if (lines.Count == 0) lines.Add("");
+            return lines;
         }
 
         private class ColumnDefinition
